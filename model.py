@@ -1,6 +1,7 @@
 """Models for Search recipes app."""
 
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 
 db = SQLAlchemy()
@@ -16,12 +17,11 @@ class User(db.Model):
     fname = db.Column(db.String, nullable = False,)
     lname = db.Column(db.String, nullable = False,)
     email = db.Column(db.String, unique=True, nullable = False,)
-    # password should have to be or no ?
+    # password should have to be mixed characters? and display as *
     password = db.Column(db.String, nullable = False, )
     mobile_no = db.Column(db.Integer, nullable = True,)
 
     def __repr__(self):
-        #print (f'<User user_id={self.user_id} email={self.email}>')
         return f'<User user_id={self.user_id} email={self.email}>'
 
 
@@ -34,8 +34,8 @@ class DishType(db.Model):
     dishtype_name = db.Column(db.String, nullable = False,)
     
     def __repr__(self):
-        #print (f'<User user_id={self.user_id} email={self.email}>')
-      #  return f'<User user_id={self.user_id} email={self.email}>'
+        return f'<DishType dishtype_id={self.dishtype_id} dishtype_name={self.dishtype_name}>'
+
 
 class Cuisine(db.Model):
     """A cuisine."""
@@ -47,8 +47,8 @@ class Cuisine(db.Model):
    
 
     def __repr__(self):
-        #print (f'<User user_id={self.user_id} email={self.email}>')
-        #return f'<User user_id={self.user_id} email={self.email}>'
+        return f'<Cuisine cuisine_id={self.cuisine_id} cuisine_name={self.cuisine_name}>'
+
 
 class Diet(db.Model):
     """A diet."""
@@ -59,9 +59,9 @@ class Diet(db.Model):
     diet_name = db.Column(db.String, nullable = False,)
    
 
-    def __repr__(self):
-        #print (f'<User user_id={self.user_id} email={self.email}>')
-      #  return f'<User user_id={self.user_id} email={self.email}>'
+    def __repr__(self):  
+        return f'<Diet diet_id={self.diet_id} diet_name={self.diet_name}>'
+
 
 class Ingredient(db.Model):
     """A ingredients."""
@@ -74,8 +74,8 @@ class Ingredient(db.Model):
     
 
     def __repr__(self):
-        #print (f'<User user_id={self.user_id} email={self.email}>')
-       # return f'<User user_id={self.user_id} email={self.email}>'
+        return f'<Ingredient ingredient_id={self.ingredient_id} ingredient={self.ingredient} unit = {self.unit}>'
+
 
 class RecipeIngredient(db.Model):
     """A recipe ingredients."""
@@ -90,8 +90,8 @@ class RecipeIngredient(db.Model):
     recipe = db.relationship('Recipe', backref='recipeingredients')
 
     def __repr__(self):
-        #print (f'<User user_id={self.user_id} email={self.email}>')
-       # return f'<User user_id={self.user_id} email={self.email}>'
+        return f'<RecipeIngredient ingredient_id={self.ingredient_id} recipe_id={self.recipe_id} quantity={self.quantity}>'
+
 
 
 class Recipe(db.Model):
@@ -103,24 +103,21 @@ class Recipe(db.Model):
     title = db.Column(db.String)
     description = db.Column(db.Text)
     #####????????????????????????
-    prep_time =
-    cook_time =
+    prep_time = db.Column(db.Integer, nullable = True,)
+    cook_time = db.Column(db.Integer, nullable = True,)
     dish_type_id =db.Column(db.Integer, db.ForeignKey('dishtypes.dish_type_id'))
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisines.cuisine_id'))
     diet_id = db.Column(db.Integer, db.ForeignKey('diets.diet_id'))
-    rinstructions
-
-    # release_date = db.Column(db.DateTime)
-    # poster_path = db.Column(db.String)
-
-    # ratings = a list of Rating objects
+    instructions = db.Column(db.Text,)
 
     dishtype = db.relationship('DishType', backref='recipes')
     cuisine = db.relationship('Cuisine', backref='recipes')
     diet = db.relationship('Diet', backref='recipes')
 
     def __repr__(self):
-       # return f'<Movie movie_id={self.movie_id} title={self.title}>'
+        return f'<Recipe recipe_id={self.recipe_id} title={self.title} description={self.description} prep_time={self.prep_time} cook_time={self.cook_time} dish_type_id={self.dish_type_id} cuisine_id={self.cuisine_id} diet_id={self.diet_id} instructions={self.instructions} >'
+
+
 
 class UserFavoriteAndReview(db.Model):
     """A User favorite, review and rating."""
@@ -130,20 +127,20 @@ class UserFavoriteAndReview(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    ####????????????
     rating = db.Column(db.Integer)
     review_notes = db.Column(db.Text)
-    #?????????????
-    favorite =
+    #????????????? yes or no / true or false
+    favorite = db.Column(db.
     
-    # ???????????
-    external
-
-    recipe = db.relationship('Recipe', backref='userfavoriteandreviews')
+    # ??????????? boolean
+    external = db.Column(db.Boolean, default = False,)
+    
+    #########?????? error
+    recipe =db.relationship('Recipe', backref='userfavoriteandreviews')
     user = db.relationship('User', backref='userfavoriteandreviews')
 
     def __repr__(self):
-       # return f'<Rating rating_id={self.rating_id} score={self.score}>'
+        return f'<UserFavoriteAndReview id={self.id} recipe_id={self.recipe_id} user_id={self.user_id} rating={self.rating} review_notes={self.review_notes} favorite={self.favorite} external={self.external}>'
 
 
 def connect_to_db(flask_app, db_uri='postgresql:///ratings', echo=True):
