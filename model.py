@@ -17,12 +17,13 @@ class User(db.Model):
     fname = db.Column(db.String, nullable = False,)
     lname = db.Column(db.String, nullable = False,)
     email = db.Column(db.String, unique=True, nullable = False,)
-    # password should have to be mixed characters? and display as *
+    # password should have to be mixed characters? and display as * type = password in html
     password = db.Column(db.String, nullable = False, )
-    mobile_no = db.Column(db.Integer, nullable = True,)
+    #
+    mobile_no = db.Column(db.String, nullable = True,)
 
     def __repr__(self):
-        return f'<User user_id={self.user_id} email={self.email}>'
+        return f'<User user_id={self.user_id} email={self.email} fname= {self.fname}>'
 
 
 class DishType(db.Model):
@@ -82,10 +83,12 @@ class RecipeIngredient(db.Model):
 
     __tablename__ = 'recipeingredients'
 
+    recipeingredient_id = db.Column(db.Integer, autoincrement=True, primary_key=True,)
     ingredient_id =db.Column(db.Integer, db.ForeignKey('ingredients.ingredient_id'))
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'))
     quantity = db.Column(db.String, nullable = False,)
     
+    # refer sqlAlchemy ????? Data moseling lecture ex : book genres
     ingredient = db.relationship('Ingredient', backref='recipeingredients')
     recipe = db.relationship('Recipe', backref='recipeingredients')
 
@@ -102,48 +105,47 @@ class Recipe(db.Model):
     recipe_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     title = db.Column(db.String)
     description = db.Column(db.Text)
-    #####????????????????????????
+    #####???????????????????????? duration
     prep_time = db.Column(db.Integer, nullable = True,)
     cook_time = db.Column(db.Integer, nullable = True,)
-    dish_type_id =db.Column(db.Integer, db.ForeignKey('dishtypes.dish_type_id'))
+    dishtype_id =db.Column(db.Integer, db.ForeignKey('dishtypes.dishtype_id'))
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisines.cuisine_id'))
     diet_id = db.Column(db.Integer, db.ForeignKey('diets.diet_id'))
-    instructions = db.Column(db.Text,)
+    
+    instructions = db.Column(db.Text)
 
     dishtype = db.relationship('DishType', backref='recipes')
     cuisine = db.relationship('Cuisine', backref='recipes')
     diet = db.relationship('Diet', backref='recipes')
 
     def __repr__(self):
-        return f'<Recipe recipe_id={self.recipe_id} title={self.title} description={self.description} prep_time={self.prep_time} cook_time={self.cook_time} dish_type_id={self.dish_type_id} cuisine_id={self.cuisine_id} diet_id={self.diet_id} instructions={self.instructions} >'
+        return f'<Recipe recipe_id={self.recipe_id} title={self.title} description={self.description} prep_time={self.prep_time} cook_time={self.cook_time} dishtype_id={self.dishtype_id} cuisine_id={self.cuisine_id} diet_id={self.diet_id} instructions={self.instructions}>'
 
 
 
-class UserFavoriteAndReview(db.Model):
-    """A User favorite, review and rating."""
+class Rating(db.Model):
+    """A User favorite, review and Rating."""
 
-    __tablename__ = 'userfavoriteandreviews'
+    __tablename__ = 'ratings'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     rating = db.Column(db.Integer)
     review_notes = db.Column(db.Text)
-    #????????????? yes or no / true or false
-    favorite = db.Column(db.
     
-    # ??????????? boolean
+    favorite = db.Column(db.Boolean, default= False,)
     external = db.Column(db.Boolean, default = False,)
     
-    #########?????? error
-    recipe =db.relationship('Recipe', backref='userfavoriteandreviews')
-    user = db.relationship('User', backref='userfavoriteandreviews')
+    
+    recipe =db.relationship('Recipe', backref='ratings')
+    user = db.relationship('User', backref='ratings')
 
     def __repr__(self):
-        return f'<UserFavoriteAndReview id={self.id} recipe_id={self.recipe_id} user_id={self.user_id} rating={self.rating} review_notes={self.review_notes} favorite={self.favorite} external={self.external}>'
+        return f'<Rating id={self.id} recipe_id={self.recipe_id} user_id={self.user_id} rating={self.rating} review_notes={self.review_notes} favorite={self.favorite} external={self.external}>'
 
 
-def connect_to_db(flask_app, db_uri='postgresql:///ratings', echo=True):
+def connect_to_db(flask_app, db_uri='postgresql:///searchrecipe', echo=False):
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     flask_app.config['SQLALCHEMY_ECHO'] = echo
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -157,7 +159,9 @@ def connect_to_db(flask_app, db_uri='postgresql:///ratings', echo=True):
 
 
 if __name__ == '__main__':
-    from server import app
+    #from server import app
+    from flask import Flask
+    app = Flask(__name__)
 
     # Call connect_to_db(app, echo=False) if your program output gets
     # too annoying; this will tell SQLAlchemy not to print out every
