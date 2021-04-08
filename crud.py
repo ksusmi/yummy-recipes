@@ -29,7 +29,7 @@ def create_dishtype(dishtype_name):
     return dishtype
 
 def create_cuisine(cuisine_name):
-    """Create and return the dishtype for the recipe """
+    """Create and return the type of cuisine for the recipe """
 
     cuisine = Cuisine(cuisine_name = cuisine_name)
 
@@ -39,7 +39,7 @@ def create_cuisine(cuisine_name):
     return cuisine
 
 def create_diet(diet_name):
-    """Create and return the dishtype for the recipe """
+    """Create and return the type of diet for the recipe """
 
     diet = Diet(diet_name = diet_name)
 
@@ -49,7 +49,7 @@ def create_diet(diet_name):
     return diet
 
 def create_ingredient(ingredient, unit):
-    """Create and return the dishtype for the recipe """
+    """Create and return the ingredients required """
 
     ingredient = Ingredient(ingredient=ingredient, unit=unit)
 
@@ -60,7 +60,7 @@ def create_ingredient(ingredient, unit):
 
 
 def create_recipeingredient(ingredient_id, recipe_id, quantity):
-    """Create and return the dishtype for the recipe """
+    """Create and return the recipe ingredients for the recipe """
 
     recipeingredient = RecipeIngredient(ingredient_id=ingredient_id, recipe_id=recipe_id, quantity= quantity)
 
@@ -69,10 +69,10 @@ def create_recipeingredient(ingredient_id, recipe_id, quantity):
 
     return recipeingredient
 
-def create_recipe(title, description, prep_time, cook_time, instructions, dishtype_id, cuisine_id,diet_id):
-    """Create and return the dishtype for the recipe """
+def create_recipe(title, description, prep_time, cook_time, dishtype_id, cuisine_id,diet_id, instructions):
+    """Create and return the recipe created """
 
-    recipe = Recipe(title = title, description= description, prep_time= prep_time, cook_time=cook_time, instructions= instructions, dishtype_id= dishtype_id, cuisine_id=cuisine_id, diet_id=diet_id)
+    recipe = Recipe(title = title, description= description, prep_time= prep_time, cook_time=cook_time, dishtype_id= dishtype_id, cuisine_id=cuisine_id, diet_id=diet_id, instructions= instructions)
 
     db.session.add(recipe)
     db.session.commit()

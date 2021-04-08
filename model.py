@@ -110,8 +110,7 @@ class Recipe(db.Model):
     cook_time = db.Column(db.Integer, nullable = True,)
     dishtype_id =db.Column(db.Integer, db.ForeignKey('dishtypes.dishtype_id'))
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisines.cuisine_id'))
-    diet_id = db.Column(db.Integer, db.ForeignKey('diets.diet_id'))
-    
+    diet_id = db.Column(db.Integer, db.ForeignKey('diets.diet_id')) 
     instructions = db.Column(db.Text)
 
     dishtype = db.relationship('DishType', backref='recipes')
@@ -159,6 +158,7 @@ def connect_to_db(flask_app, db_uri='postgresql:///searchrecipe', echo=False):
 
 
 if __name__ == '__main__':
+    # since my server.py is not ready so for now commenting and using below
     #from server import app
     from flask import Flask
     app = Flask(__name__)
