@@ -65,7 +65,7 @@ for cuisine in mycusine:
 
 
 # diet = create_diet('vegan')
-mydiet = ['vegan', 'vegetarian', 'gluteen free', 'diary free', 'vegan', 'vegan', 'vegan', 'vegan', 'vegan', 'vegan']
+mydiet = ['vegan', 'vegetarian', 'gluteen free', 'diary free', 'mediterranen', 'pescatarian', 'vegan', 'vegan', 'vegan', 'vegan']
 diet_in_db=[]
 for diet in mydiet:
     db_diet = create_diet(diet)
