@@ -118,7 +118,7 @@ class Recipe(db.Model):
     diet = db.relationship('Diet', backref='recipes')
 
     def __repr__(self):
-        return f'<Recipe recipe_id={self.recipe_id} title={self.title} description={self.description} prep_time={self.prep_time} cook_time={self.cook_time} dishtype_id={self.dishtype_id} cuisine_id={self.cuisine_id} diet_id={self.diet_id} instructions={self.instructions}>'
+        return f'<Recipe recipe_id={self.recipe_id} title={self.title}>'
 
 
 

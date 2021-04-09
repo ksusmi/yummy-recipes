@@ -90,6 +90,17 @@ def create_rating(rating, review_notes, favorite, external, recipe_id, user_id):
 
     return rating
 
+def get_all_recipes():
+    recipes = Recipe.query.all()
+
+    return recipes
+
+def get_recipes_by_search():
+    
+  
+
+   
+
 
 
 if __name__ == '__main__':

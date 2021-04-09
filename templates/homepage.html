@@ -1,31 +1,57 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yummy recipes when you are hungry</title>
+    <link rel="stylesheet" href="/static/homepage.css">
+  </head>
 
+<!-- <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet"
           href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css"/>
     <link rel="stylesheet" href="/static/css/homepage.css">
-    <title>Ubermelon. Melons when you want them.</title>
-</head>
 
+    <title>Yummy recipes when you are hungry</title>
+</head> -->
 <body>
-
-<div class="site-wrapper">
-    <div class="site-wrapper-inner">
-
-        <img src="/static/img/ubermelon-logo.png">
-
-        <h1>Ubermelon.</h1>
-
-        <p class="lead">Melons when you want them.</p>
-
-        <a href="/melons" class="btn btn-lg btn-primary">Shop Now</a>
+    <div class="site-wrapper">
+        <div class="site-wrapper-inner">
+        <img src = "/static/img/ingredients-homemade-pizza_35641-2533.jpg">
+        <h1> Yummy Recipes </h1>
 
     </div>
-</div>
+    </div>
 
-<footer>
-    <p>Copyright Ubermelon 2016. All rights reserved.</p>
-</footer>
 
+    <input id="input" type="search" autocomplete="off" spellcheck="false"  placeholder="Search Google or type a URL" aria-live="polite">
+    <br><br>
+    <form action = "/login">
+    <div class="container">
+        <label for="uname"><b>Username</b></label>
+        <input id = "uname" type="text" placeholder="Enter Username" name="uname" required>
+    
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" required>
+        <br>
+        <button type="submit">Login</button> 
+        <label>
+          <input type="checkbox" checked="checked" name="remember"> Remember me
+        </label>
+      </div>
+      </form>
+    
+      <div class="container" style="background-color:#f1f1f1">
+        <button type="button" class="cancelbtn">Cancel</button>
+        <span class="psw">Forgot <a href="#">password?</a></span>
+      </div>
+      <footer>
+      <!--  <p>Copyright Yummy recipe 2021. All rights reserved.</p> -->
+    </footer>
 </body>
 </html>
