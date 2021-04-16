@@ -96,12 +96,13 @@ while i < 5:
 rec_title = ['pancake', 'cupcake', 'omlete', 'fried rice', 'sandwitch','cheese burger', 'cake', 'tomato soup', 'falooda', 'mango moose']
 rec_des=['pancake', 'cupcake', 'omlete', 'fried rice', 'sandwitch','cheese burger', 'cake', 'tomato soup_desc', 'falooda_desc', 'mango moose_desc']
 rec_inst = "instructions"
+rec_url = " "
 rec_in_db =[]
 i=0
  
 while i < 10:
 
-    db_recipe = create_recipe( rec_title[i], f'{rec_des[i]} _desc', i*2, i*4, dish_in_db[i].dishtype_id, cuisine_in_db[i].cuisine_id, diet_in_db[i].diet_id, f'{rec_inst} _ {i}')
+    db_recipe = create_recipe( rec_title[i], f'{rec_des[i]} _desc', i*2, i*4, dish_in_db[i].dishtype_id, cuisine_in_db[i].cuisine_id, diet_in_db[i].diet_id, f'{rec_inst} _ {i}', rec_url)
     rec_in_db.append(db_recipe)
     i +=1
 print("\n")

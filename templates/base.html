@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+<!----
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="/static/css/recipe.css"> -->
+  <style>
+    body  {
+      background-image: url("/static/img/ingredients-homemade-pizza_35641-2533.jpg");
+      
+      background-color: #cccccc;
+      
+    }
+    </style>
+
+</head>
+<body>
+  <div class = "container">
+    <h1>
+      <a href="/">Yummy Recipes</a>
+    </h1>
+    </div>
+
+      <div class="container">
+        <a href="/login">Login</a>
+        </div>
+    
+
+  {% block content %} CONTENT HERE {% endblock %}
+  
+</body>
+</html>

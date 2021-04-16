@@ -1,0 +1,54 @@
+/* Yummy Recipe Homepage */
+
+/* The body has an iamge that spans the entire size of the page.
+   Everything is centered and in white. */
+
+
+.search-field {
+    font-family: "Source Sans Pro","Times New Roman",serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(0,0,0,0.95);
+    border: none;
+    padding-left: 24px;
+    width: 100%;
+
+}
+
+.searchBlock_form .searchButton {
+    background: #d54215;
+    padding: 14px;
+}
+body {
+    background-image: url("/static/img/paper.gif");
+    background-color: #cccccc;
+    /* background: #333 url("/static/img/homepage-background.jpg");
+    background-size: cover;
+
+    color: white;*/
+    text-align: center;
+}
+
+/* site-wrapper and site-wrapper-inner are to vertically center content using
+   table/table-cell vertical centering. */
+
+.site-wrapper {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.site-wrapper-inner {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+/* The footer always appears at the bottom of the browser window. */
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;  /* required because fixed position */
+}

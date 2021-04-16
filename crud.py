@@ -69,10 +69,10 @@ def create_recipeingredient(ingredient_id, recipe_id, quantity):
 
     return recipeingredient
 
-def create_recipe(title, description, prep_time, cook_time, dishtype_id, cuisine_id,diet_id, instructions):
+def create_recipe(title, description, prep_time, cook_time, dishtype_id, cuisine_id,diet_id, instructions,url):
     """Create and return the recipe created """
 
-    recipe = Recipe(title = title, description= description, prep_time= prep_time, cook_time=cook_time, dishtype_id= dishtype_id, cuisine_id=cuisine_id, diet_id=diet_id, instructions= instructions)
+    recipe = Recipe(title = title, description= description, prep_time= prep_time, cook_time=cook_time, dishtype_id= dishtype_id, cuisine_id=cuisine_id, diet_id=diet_id, instructions= instructions,url=url)
 
     db.session.add(recipe)
     db.session.commit()
@@ -95,7 +95,21 @@ def get_all_recipes():
 
     return recipes
 
-def get_recipes_by_search():
+def get_recipes_by_search(search):
+    
+    #recipe_with_ingredient = db.session.query(Recipe).join(RecipeIngredient, RecipeIngredient.recipe_id == Recipe.recipe_id).join(Ingredient, Ingredient.ingredient == search)
+    #result = recipe_with_ingredient.all()
+    recipe_with_ingredient= db.session.query(Recipe.recipe_id, Recipe.title).join(RecipeIngredient).join(Ingredient).filter(Ingredient.ingredient == search).all()
+    
+    return recipe_with_ingredient
+
+def get_user(email):
+    return User.query.filter(User.email == email).first()
+
+#def get_recipingredients():
+
+
+
     
   
 

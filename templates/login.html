@@ -1,13 +1,26 @@
-<html>
-<head>
-  <title>Login</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %} Login Page {% endblock %}
+{% block content %}
 
-<form class="form-signin" method="POST">
+<form class="form-signin" action = "/signin" method = "POST">
 
-  <h2 class="form-signin-heading">Please Sign In</h2>
+  <h2 class="form-signin-heading">Please Login</h2>
+  <input type = "email" name = "email" placeholder = "Email Address" required>
+  <br>
+  <input type = "password" name = "password" placeholder = "Password" required>
+  <br><br>
+  <button type = "submit" class = "loginButton"> Sign In</button>
+  <br>  
+  <a href="/signup">Sign Up</a>
+  <!--<form class="form-signup" action = "/signup" method = "POST">
+  <button type = "submit" class = "signupButton"> Sign Up</button>-->
+  <ul>
+    {% for message in get_flashed_messages() %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul> 
 
+<!----
   <div class="form-group">
     <label for="email-field" class="sr-only">Email Address</label>
     <input type="email"
@@ -29,9 +42,8 @@
 
   <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In
   </button>
-
+-->
 </form>
 
-</body>
-</html>
+{% endblock %}
 

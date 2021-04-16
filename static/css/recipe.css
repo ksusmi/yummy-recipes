@@ -1,0 +1,23 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+th {
+        font-family: 'Lobster', sans-serif;
+        font-weight: normal;
+}
+
+body {
+    font-size: 2em;
+}
+
+h1 {
+    height: 100px;
+    padding-top:  0.4em;
+    text-align: center;
+    font-size: 2em;
+    background: rgb(186, 245, 215) url(/static/img/our-food_375.jpg) no-repeat left;
+    background-size: 220px 210px;
+}

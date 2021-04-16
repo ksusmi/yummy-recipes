@@ -112,6 +112,7 @@ class Recipe(db.Model):
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisines.cuisine_id'))
     diet_id = db.Column(db.Integer, db.ForeignKey('diets.diet_id')) 
     instructions = db.Column(db.Text)
+    url = db.Column(db.String, nullable = True)
 
     dishtype = db.relationship('DishType', backref='recipes')
     cuisine = db.relationship('Cuisine', backref='recipes')
