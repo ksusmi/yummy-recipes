@@ -23,12 +23,7 @@ headers = {
         'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
         }
 
-
-
 def get_recipe_details_by_id(recipeid):
-    #url = f"https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/{recipeid}/information"
-    #response = requests.request("GET", url, headers=headers)
-    #return response.json()
 
     recipe_info_endpoint = "recipes/{0}/information".format(recipeid)
     ingedientsWidget = "recipes/{0}/ingredientWidget".format(recipeid)
@@ -37,7 +32,6 @@ def get_recipe_details_by_id(recipeid):
     recipe_info = requests.request("GET", url + recipe_info_endpoint, headers=headers).json()
         
     headers["accept"] = "text/html"
-        #'accept': "text/html"
     querystring = {"defaultCss":"true", "showBacklink":"false"}
 
     recipe_info['inregdientsWidget'] = requests.request("GET", url + ingedientsWidget, headers=headers, params=querystring).text
@@ -49,9 +43,6 @@ def get_recipe_details_by_id(recipeid):
     return recipe_info
 
 def get_recipe_by_ingredients(ingredients):
-    #url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients"
-    #response = requests.request("GET", url, headers=headers, params=querystring)
-    #return response.json()
 
     recipe_info_endpoint = "recipes/findByIngredients"
     querystring = {"ingredients":ingredients,"number":"5","ranking":"1","ignorePantry":"true"}
@@ -60,9 +51,6 @@ def get_recipe_by_ingredients(ingredients):
     return recipe_info
 
 def get_recipe_nutriinfo(recipeid):
-    #url = f"https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/{recipeid}/nutritionWidget.json"
-    #response = requests.request("GET", url, headers=headers)
-    #return response.json()
 
     recipe_info_endpoint = "recipes/{0}/nutritionWidget.json".format(recipeid)
     response = requests.request("GET", url + recipe_info_endpoint, headers=headers)

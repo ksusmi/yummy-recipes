@@ -160,9 +160,9 @@ def connect_to_db(flask_app, db_uri='postgresql:///searchrecipe', echo=False):
 
 if __name__ == '__main__':
     # since my server.py is not ready so for now commenting and using below
-    #from server import app
-    from flask import Flask
-    app = Flask(__name__)
+    from server import app
+    #from flask import Flask
+    #app = Flask(__name__)
 
     # Call connect_to_db(app, echo=False) if your program output gets
     # too annoying; this will tell SQLAlchemy not to print out every

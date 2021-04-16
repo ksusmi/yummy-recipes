@@ -2,6 +2,10 @@
 {% block title %} {{recipe['title']}} {% endblock %}
 {% block content %}
 
+{% if session['fname'] %}
+<h1>Welcome, {{ session['fname'] }}<h1>
+  {% endif %}
+
 <div style="max-width: 70%; margin: auto; padding-top:3%">
   <div class="media">
       <img src="{{recipe['image']}}" class="mr-3" alt="..." width="20%" height="20%">
@@ -15,7 +19,8 @@
     <h2 class="section-headline">
       <a id="nutrition"></a>
       <span class="section-icon " aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" role="img" aria-hidden="true"><path d="M4 11.116S3.954 9.6 5.282 9.6h2.241c1.325 0 1.277 1.516 1.277 1.516V20H4v-8.884zm5.6-5.632S9.554 4 10.881 4h2.242C14.446 4 14.4 5.484 14.4 5.484V20H9.6V5.484zm5.6 9.531s-.043-1.415 1.277-1.415h2.242c1.324 0 1.28 1.415 1.28 1.415V20H15.2v-4.985z"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" role="img" aria-hidden="true">
+          <path d="M4 11.116S3.954 9.6 5.282 9.6h2.241c1.325 0 1.277 1.516 1.277 1.516V20H4v-8.884zm5.6-5.632S9.554 4 10.881 4h2.242C14.446 4 14.4 5.484 14.4 5.484V20H9.6V5.484zm5.6 9.531s-.043-1.415 1.277-1.415h2.242c1.324 0 1.28 1.415 1.28 1.415V20H15.2v-4.985z"></path></svg>
       </span>
       Nutrition Facts 
     </h2>
@@ -29,14 +34,25 @@
         Cuisines: {{cuisines}}
         dishType: {{dishType}}
         diets: {{diets}}
+        Vegan: {{res[0].vegan}}
+        Vegetarian: {{res[0].vegetarian}}
+        GlutenFree: {{res[0].glutenFree}}
+        DairyFree: {{res[0].dairyFree}}
+        VeryHealthy: {{res[0].veryHealthy}}
+        Price-Per-Serving: {{res[0].pricePerServing}}
+        Ready-In-Minutes: {{res[0].readyInMinutes}}
+
 
         <!-- 54 calories; protein 3.4g; carbohydrates 17.7g; fat 30.9g; cholesterol 13.9mg; sodium 702.4mg.
           <a href="#" class="recipe-nutrition-section-link link-view" aria-label="Read Full Nutrition" data-tracking-do-not-track="1">Full Nutrition</a> -->
       </div>
+      
     </div>
   </section>
 
-  <div class = ""> <div> <h3> prep time</h3></div></div>
+  <div class = ""> <div> 
+    <h3> prep time</h3>
+  </div></div>
   {{recipe['inregdientsWidget'] | safe }}<br>
   {{recipe['equipmentWidget'] | safe}}  
 </div>

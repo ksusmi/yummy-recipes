@@ -2,7 +2,9 @@
 {% block title %} Search Result {% endblock %}
 {% block content %}
   
- 
+{% if session['fname'] %}
+<h1>Welcome, {{ session['fname'] }}<h1>
+  {% endif %}
   <div class = "search-result"> 
     <div class="search-results-top">
       <h2 class= "header"> You searched for {{session['search']}}</h2>
@@ -10,8 +12,6 @@
       
       </span>
     </div>
-    <!--{{session['search']}}
-    {{filtered_recipe}}-->
    
     {% for recipe in filtered_recipe %}
 

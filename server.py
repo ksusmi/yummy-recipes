@@ -9,7 +9,7 @@ from flask import (Flask, render_template, request, flash, session,
 #from wtforms.validators import InputRequired, Email, Length
 # from model import connect_to_db
 # import crud
-from crud import create_user, create_dishtype, create_cuisine, create_diet, create_ingredient, create_recipeingredient, create_recipe, create_rating, get_all_recipes,get_recipes_by_search, get_user
+from crud import create_user, create_dishtype, create_cuisine, create_diet, create_ingredient, create_recipeingredient, create_recipe, create_rating, get_all_recipes,get_recipes_by_search, get_user, get_user_by_userid
 from model import db, User, DishType, Cuisine, Diet, Ingredient, RecipeIngredient, Recipe, Rating, connect_to_db
 #from api import SpoonacularApi
 import requests
@@ -19,15 +19,11 @@ import rapidapi
 #  You’ll use it to configure a Jinja2 setting to make it throw errors for undefined variables
 from jinja2 import StrictUndefined
 
-
-
-
 app = Flask(__name__)
 # for encryption
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
 
-# Replace this with routes and view functions!
 @app.route('/')
 def homepage():
     """View homepage."""
@@ -40,48 +36,32 @@ def search():
     search = request.args.get('search')
     session['search'] = search
 
-    #all_recipes = get_all_recipes()
-    # not defined yet
-    #return render_template('homepage.html', all_recipes=all_recipes)
     return redirect('/search/results')
 
 @app.route('/search/results')
 def search_result():
     """View searchpage."""
+    if "user_id" in session:
 
-    if session['search'] == "":
-        return redirect('/')
-    else:
         s = session['search']
         response_json = rapidapi.get_recipe_by_ingredients(s)
         print("search string******************" + s)
         res =[]
-        res1 = []
-
         for data in response_json:
-            ot={}
-            ot1={}
+            ot={}         
             ot['id'] = data['id']
             ot['title'] = data['title']
             ot['image'] = data['image']
             res.append(ot)
-          
+        return render_template('searchResult.html', filtered_recipe = res)
 
-        # for data in recipes_json:
-        #     ot={}
-        #     ot['id'] = data['id']
-        #     ot['title']=data['title']
-        #     ot['image']=data['image']   
-        #     res.append(ot)
-
-    #return render_template('searchResult.html', filtered_recipe = filtered_recipe.json())
-    return render_template('searchResult.html', filtered_recipe = res)
+    else:
+        flash ("Please Login before you start your search")
+        return redirect ("/login")
 
 @app.route('/recipe/details')
 def get_recipe_details():
     s = session['search']
-   # u = session["userId"]
-    #if u:
     recipe_id = request.args['id']
     
     res1=[]
@@ -96,7 +76,6 @@ def get_recipe_details():
     cuisines= recipe_details["cuisines"]
     dishType = recipe_details["dishTypes"]
     diets = recipe_details["diets"]
-    #dishTypes diets
 
     ot1['vegetarian'] = recipe_details['vegetarian']
     ot1['vegan'] =recipe_details['vegan']
@@ -104,7 +83,7 @@ def get_recipe_details():
     ot1['dairyFree'] = recipe_details['dairyFree']
     ot1['veryHealthy'] =recipe_details['veryHealthy']
     ot1['pricePerServing'] =recipe_details['pricePerServing']
-    #res1.append(ot1)
+    ot1['readyInMinutes'] = recipe_details['readyInMinutes']
 
     recipe_nutritions = rapidapi.get_recipe_nutriinfo(recipe_id)
     print ("*******************************")
@@ -117,8 +96,7 @@ def get_recipe_details():
     print (recipe_nutritions)
     res1.append(ot1)
     
-   
-    return render_template('recipedetails.html', recipe=recipe_details, res = res1, cuisines = cuisines,dishType=dishType, diets=diets )
+    return render_template('recipedetails.html', recipe=recipe_details, res = res1, cuisines = cuisines,dishType=dishType, diets=diets,)
 
 
 @app.route('/login')
@@ -134,20 +112,56 @@ def sign_in():
     email = request.form.get("email")
     password = request.form.get("password")
     user = get_user(email)
-    #print ("********************** \n ", user.password)
+    # if password matches and is in db
     if user and password == user.password:
         # I have to set user_id to session only here 
         # every where else i have to be checking
         session["user_id"] = user.user_id
+        session["fname"] = user.fname
+        print(session, 'SESSION!!!!!!')
         flash("Logged in as %s" % user.user_id)
         return redirect('/')
+
+    # email is in db but typed wrong pwd
     elif user and email == user.email:
         flash ("Please Check Your Password")
         return redirect('/login')
+    
+    # if user not in db to signup
     else:
-       flash ("PLEASE SIGNUP")
+       flash ("PLEASE SIGNUP") 
        return redirect('/login')
 
+@app.route('/logout')
+def user_logout():  
+
+    user_id = session.get('user_id')
+    if user_id:
+        user = get_user_by_userid(user_id)
+        session.clear()
+        return render_template("logout.html", user=user)
+    else:
+        return redirect ("/login")
+
+    #logout keys to remove from session    
+    # logout_keys_to_remove = ["fname", "user_id"]
+    # for key in logout_keys_to_remove:
+    #    session.pop(key,None)
+    # flash ("You logged in as %s" % session['fname'])
+    # flash("Thank You for choosing Yummy Recipe Website")
+
+    # return render_template("logout.html")
+
+
+# @app.route('/get-name')
+# def get_name():
+#     """Get name from homepage form and store name in session."""
+
+#     name = request.args.get('name')
+#     session['name'] = name
+
+# user = User.query.get(session['user_id'])
+# return render_template('page.html', user=user)
     
 
 @app.route('/signup', methods = ["GET", "POST"])
@@ -163,11 +177,6 @@ def sign_up():
         create_user(firstname, lastname, email, password, mobileno)
         return redirect ('/login')
 
-
-@app.route('/signout')
-def sign_out():
-
-    return render_template("logout.html")
 
 @app.route('/favorite')
 def favorite():

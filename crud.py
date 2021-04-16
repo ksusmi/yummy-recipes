@@ -106,7 +106,9 @@ def get_recipes_by_search(search):
 def get_user(email):
     return User.query.filter(User.email == email).first()
 
-#def get_recipingredients():
+def get_user_by_userid(user_id):
+    return User.query.filter(User.user_id == user_id).first()
+
 
 
 
@@ -119,9 +121,8 @@ def get_user(email):
 
 if __name__ == '__main__':
     # since my server.py is not ready so for now commenting and using below
-    #from server import app
-
-    from flask import Flask
-    app = Flask(__name__)
-
+    #from flask import Flask
+    #app = Flask(__name__)
+    #server is ready
+    from server import app
     connect_to_db(app)

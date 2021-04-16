@@ -14,11 +14,18 @@
   <a href="/signup">Sign Up</a>
   <!--<form class="form-signup" action = "/signup" method = "POST">
   <button type = "submit" class = "signupButton"> Sign Up</button>-->
-  <ul>
+
+  {% with messages = get_flashed_messages() %}
+  {% for message in messages %}
+      <div class="alert alert-warning">{{ message }}</div>
+  {% endfor %}
+  {% endwith %}
+
+  <!--<ul>
     {% for message in get_flashed_messages() %}
       <li>{{ message }}</li>
     {% endfor %}
-  </ul> 
+  </ul> -->
 
 <!----
   <div class="form-group">
