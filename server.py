@@ -58,9 +58,6 @@ def search_result():
         return redirect ("/login")
 
 @app.route('/recipe/details')
-# the route should be the same 
-#@app.route('/recipe/details?id=<recipe_id>')
-#def get_recipe_details(recipe_id):
 def get_recipe_details():
     s = session['search']
     recipe_id = request.args['id']
@@ -191,16 +188,25 @@ def add_your_recipe():
 def add_to_your_favorite():
     if 'user_id' in session:
         user_id = session.get('user_id')
-        recipe_id = request.form.get("recipeid")
-        recipetitle = request.form.get("recipetitle")
-        recipeinstructions = request.form.get("recipeinstructions")
-        external = request.form.get("external")
-        favorite = "False"
+        recipe_id = request.form.get("recipe-id")
+        recipetitle = request.form.get("recipe-title")
+        recipeinstructions = request.form.get("recipe-instructions")
+        review_notes= request.form.get("review-notes")
+        #recipe = Recipe.query.get(recipe_id)
+        if Recipe.query.get(recipe_id) is None:
+            external = True
+            #external = request.form.get("external")
+        favorite = True
         # print ("##################### recipeid from addfav = ", recipe_id)
         # print ("##################### recipetitle from addfav = ", recipetitle)
         # print ("##################### recipeinstructions from addfav = ", recipeinstructions)
-        create_rating('', "", False, external, recipe_id, recipetitle, recipeinstructions, user_id)
-        print("************ Successfully added")
+
+        check_rating = Rating.query.filter(Rating.user_id == user_id).filter( Rating.recipe_id == recipe_id).filter(Rating.external == external).all()
+        if not  check_rating:
+            create_rating(1, review_notes, favorite, external, recipe_id, recipetitle, recipeinstructions, user_id)
+            print("************ Successfully added" )
+            flash ("Recipe added to favorites")
+
         
         return redirect(f'/recipe/details?id={recipe_id}')
         #return redirect(url_for('recipe/details', id=recipe_id))
@@ -218,6 +224,10 @@ def add_to_your_favorite():
 #     # how to update only one entry to the table
 #     # create_rating('', review_notes, "", "", "", "", "", user_id)
 #     # if i do like above then will it not overwrite?
+
+
+        check_rating = Rating.query.filter(Rating.user_id == user_id).filter( Rating.recipe_id == recipe_id).filter(Rating.external == external).first()
+
         # filter by userid and recipid and 
         # rating object
         #update objectname.attributename=value
