@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %} {{recipe['title']}} {% endblock %}
+
 {% block content %}
 
 {% if session['fname'] %}
@@ -8,7 +9,33 @@
 
 <div style="max-width: 70%; margin: auto; padding-top:3%">
   <div class="media">
-      <img src="{{recipe['image']}}" class="mr-3" alt="..." width="20%" height="20%">
+      <img src="{{recipe['image']}}" class="mr-3" alt="..." width="30%" height="30%">
+    
+      <!-- adding form to get the details from recipedetail pg and pass to the server-->
+      <form action="/addtofavorite" method="POST">
+        <input type = "hidden" name = "recipeid" value = "{{ recipe ['id']}}"> 
+        <input type = "hidden" name = "recipetitle" value = "{{ recipe['title'] }}">
+        <input type = "hidden" name = "recipeinstructions" value = "{{ recipe['instructions'] }}">
+        <input type = "hidden" name = "external" value = "True">
+
+        <button type="submit" name="addtofavorite" class="btn-link">Add To Fav</button>
+        </form>
+
+        <!-- <div class="form-popup" id="myForm">
+          <form action="/action_page.php" class="form-container">
+            <h1>Login</h1>
+        
+            <label for="review"><b>Write a Review</b></label>
+            <input type="text" placeholder="Enter Review" name="review" required>
+        
+            <button type="submit" class="btn">Login</button>
+            <button type="submit" class="btn cancel" onclick="closeForm()">Close</button>
+          </form>
+        </div> -->
+        <a href="/review">Write a Review</a>
+        
+    
+
       <div class="media-body">
         <h5 class="mt-0">{{recipe['title']}}</h5>
         {{recipe['instructions']}}

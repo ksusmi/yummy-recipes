@@ -1,8 +1,7 @@
 """CRUD operations."""
 
 from model import db, User, DishType, Cuisine, Diet, Ingredient, RecipeIngredient, Recipe, Rating, connect_to_db
-#import model from model
-
+#from server import app
 
 
 # Functions start here!
@@ -80,10 +79,10 @@ def create_recipe(title, description, prep_time, cook_time, dishtype_id, cuisine
     return recipe
 
 
-def create_rating(rating, review_notes, favorite, external, recipe_id, user_id):
+def create_rating(rating, review_notes, favorite, external, recipe_id, title_ext, description_ext, user_id):
     """Create and return a new rating."""
 
-    rating = Rating(rating=rating, review_notes=review_notes, favorite=favorite, external=external, recipe_id=recipe_id, user_id=user_id)
+    rating = Rating(rating=rating, review_notes=review_notes, favorite=favorite, external=external, recipe_id=recipe_id, title_ext=title_ext, description_ext=description_ext, user_id=user_id)
 
     db.session.add(rating)
     db.session.commit()
@@ -109,6 +108,8 @@ def get_user(email):
 def get_user_by_userid(user_id):
     return User.query.filter(User.user_id == user_id).first()
 
+# def insert_user_favorite_data():
+#         insert(user_table).values(name='username', fullname='Full Username')
 
 
 
@@ -121,8 +122,8 @@ def get_user_by_userid(user_id):
 
 if __name__ == '__main__':
     # since my server.py is not ready so for now commenting and using below
-    #from flask import Flask
-    #app = Flask(__name__)
+    from flask import Flask
+    app = Flask(__name__)
     #server is ready
-    from server import app
+    #from server import app
     connect_to_db(app)

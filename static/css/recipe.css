@@ -1,4 +1,4 @@
-h1,
+/* h1,
 h2,
 h3,
 h4,
@@ -10,7 +10,7 @@ th {
 }
 
 body {
-    font-size: 2em;
+    font-size: 1em;
 }
 
 h1 {
@@ -20,4 +20,15 @@ h1 {
     font-size: 2em;
     background: rgb(186, 245, 215) url(/static/img/our-food_375.jpg) no-repeat left;
     background-size: 220px 210px;
+} */
+.btn-link {
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    color: #0000EE;
+    padding: 0;
+    text-decoration: underline;
+    font-family: inherit;
+    font-size: inherit;
 }

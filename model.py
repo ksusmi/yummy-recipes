@@ -2,7 +2,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+#from server import app
 
 db = SQLAlchemy()
 
@@ -129,20 +129,40 @@ class Rating(db.Model):
     __tablename__ = 'ratings'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    #recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'))
+    recipe_id =  db.Column(db.Integer, nullable = False)
+    title_ext = db.Column(db.String)
+    description_ext = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable = False)
     rating = db.Column(db.Integer)
-    review_notes = db.Column(db.Text)
-    
+    review_notes = db.Column(db.Text)   
     favorite = db.Column(db.Boolean, default= False,)
     external = db.Column(db.Boolean, default = False,)
     
-    
-    recipe =db.relationship('Recipe', backref='ratings')
+    #recipe =db.relationship('Recipe', backref='ratings')
     user = db.relationship('User', backref='ratings')
+    
+    #sequence
+    #psql
+    #drop table tablename;
+    #model interactively
+    #db.create_all()
+    #add data
+
 
     def __repr__(self):
         return f'<Rating id={self.id} recipe_id={self.recipe_id} user_id={self.user_id} rating={self.rating} review_notes={self.review_notes} favorite={self.favorite} external={self.external}>'
+
+# class AddToFavorite(db.Model):
+#     """A Recipe ."""
+
+#     __tablename__ = 'addtofavorites'
+
+#     addtofav_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     addtofav_recipe_id =
+#     addtofav_user_id = 
+#     addtofav_title = db.Column(db.String)
+#     addtofav_description = db.Column(db.Text)
 
 
 def connect_to_db(flask_app, db_uri='postgresql:///searchrecipe', echo=False):
@@ -160,9 +180,9 @@ def connect_to_db(flask_app, db_uri='postgresql:///searchrecipe', echo=False):
 
 if __name__ == '__main__':
     # since my server.py is not ready so for now commenting and using below
-    from server import app
-    #from flask import Flask
-    #app = Flask(__name__)
+    #from server import app
+    from flask import Flask
+    app = Flask(__name__)
 
     # Call connect_to_db(app, echo=False) if your program output gets
     # too annoying; this will tell SQLAlchemy not to print out every

@@ -1,7 +1,8 @@
 import requests
 import os
-from server import app
-
+#from server import app
+from flask import Flask
+app = Flask(__name__)
 
 #app.secret_key = 'SECRETSECRETSECRET'
 

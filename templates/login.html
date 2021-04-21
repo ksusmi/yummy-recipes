@@ -2,7 +2,11 @@
 {% block title %} Login Page {% endblock %}
 {% block content %}
 
-<form class="form-signin" action = "/signin" method = "POST">
+
+
+    <form class="form-signin" action = "/signin" method = "POST">
+  
+
 
   <h2 class="form-signin-heading">Please Login</h2>
   <input type = "email" name = "email" placeholder = "Email Address" required>
@@ -20,12 +24,6 @@
       <div class="alert alert-warning">{{ message }}</div>
   {% endfor %}
   {% endwith %}
-
-  <!--<ul>
-    {% for message in get_flashed_messages() %}
-      <li>{{ message }}</li>
-    {% endfor %}
-  </ul> -->
 
 <!----
   <div class="form-group">

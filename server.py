@@ -1,17 +1,15 @@
 """Server for movie ratings app."""
 
-from flask import (Flask, render_template, request, flash, session,
-                   redirect)
 
 #from flask_bootstrap import Bootstrap
 #from flask_wtf import Flaskform
 #from wtforms import StringField, PasswordField, BooleanField
 #from wtforms.validators import InputRequired, Email, Length
-# from model import connect_to_db
-# import crud
+
+from flask import (Flask, render_template, request, flash, session,
+                   redirect, url_for)
 from crud import create_user, create_dishtype, create_cuisine, create_diet, create_ingredient, create_recipeingredient, create_recipe, create_rating, get_all_recipes,get_recipes_by_search, get_user, get_user_by_userid
 from model import db, User, DishType, Cuisine, Diet, Ingredient, RecipeIngredient, Recipe, Rating, connect_to_db
-#from api import SpoonacularApi
 import requests
 import rapidapi
 
@@ -60,6 +58,9 @@ def search_result():
         return redirect ("/login")
 
 @app.route('/recipe/details')
+# the route should be the same 
+#@app.route('/recipe/details?id=<recipe_id>')
+#def get_recipe_details(recipe_id):
 def get_recipe_details():
     s = session['search']
     recipe_id = request.args['id']
@@ -70,7 +71,7 @@ def get_recipe_details():
     recipe_details= rapidapi.get_recipe_details_by_id(recipe_id)
 
     print("**********************************\n ****************************")
-    #print(recipe_details)
+    print(recipe_id)
     print("**********************************\n ****************************")
 
     cuisines= recipe_details["cuisines"]
@@ -87,13 +88,13 @@ def get_recipe_details():
 
     recipe_nutritions = rapidapi.get_recipe_nutriinfo(recipe_id)
     print ("*******************************")
-    print (recipe_nutritions)
+    #print (recipe_nutritions)
 
     ot1['calories'] = recipe_nutritions['calories']
     ot1['carbs'] = recipe_nutritions['carbs']
     ot1['fat'] = recipe_nutritions['fat']
     ot1['protein'] = recipe_nutritions['protein']
-    print (recipe_nutritions)
+    #print (recipe_nutritions)
     res1.append(ot1)
     
     return render_template('recipedetails.html', recipe=recipe_details, res = res1, cuisines = cuisines,dishType=dishType, diets=diets,)
@@ -102,13 +103,18 @@ def get_recipe_details():
 @app.route('/login')
 def login():
     """View registration/login page."""
+    #redirect_to = request.form.get('next', '')
     
+    #return render_template('login.html', redirect_to=redirect_to)
     return render_template('login.html')
 
 
 @app.route('/signin', methods = ["POST"])
 def sign_in():
     print(request.origin)
+    # redirect_to = request.form.get('next', '')
+    # print ("************ redirect_to = ", redirect_to)
+   
     email = request.form.get("email")
     password = request.form.get("password")
     user = get_user(email)
@@ -121,6 +127,7 @@ def sign_in():
         print(session, 'SESSION!!!!!!')
         flash("Logged in as %s" % user.user_id)
         return redirect('/')
+        #return redirect(redirect_to) 
 
     # email is in db but typed wrong pwd
     elif user and email == user.email:
@@ -142,15 +149,6 @@ def user_logout():
         return render_template("logout.html", user=user)
     else:
         return redirect ("/login")
-
-    #logout keys to remove from session    
-    # logout_keys_to_remove = ["fname", "user_id"]
-    # for key in logout_keys_to_remove:
-    #    session.pop(key,None)
-    # flash ("You logged in as %s" % session['fname'])
-    # flash("Thank You for choosing Yummy Recipe Website")
-
-    # return render_template("logout.html")
 
 
 # @app.route('/get-name')
@@ -187,6 +185,44 @@ def favorite():
 @app.route('/add/yourrecipe')
 def add_your_recipe():
     return render_template('addyourrecipe.html')
+
+###### Made changes from this part today Ap 19th
+@app.route('/addtofavorite', methods =['POST'])
+def add_to_your_favorite():
+    if 'user_id' in session:
+        user_id = session.get('user_id')
+        recipe_id = request.form.get("recipeid")
+        recipetitle = request.form.get("recipetitle")
+        recipeinstructions = request.form.get("recipeinstructions")
+        external = request.form.get("external")
+        favorite = "False"
+        # print ("##################### recipeid from addfav = ", recipe_id)
+        # print ("##################### recipetitle from addfav = ", recipetitle)
+        # print ("##################### recipeinstructions from addfav = ", recipeinstructions)
+        create_rating('', "", False, external, recipe_id, recipetitle, recipeinstructions, user_id)
+        print("************ Successfully added")
+        
+        return redirect(f'/recipe/details?id={recipe_id}')
+        #return redirect(url_for('recipe/details', id=recipe_id))
+    #or use eventlistener fn
+    #ajax and javascript 
+
+
+#use javascript whenpage loads
+#div with text box hidden
+#submit--- ajax req to add to db
+# @app.route('/addreview')
+# def add_review():
+#     # search this user_id and recipe_id in the table
+#     # then add the review to this rating table under this user_id 
+#     # how to update only one entry to the table
+#     # create_rating('', review_notes, "", "", "", "", "", user_id)
+#     # if i do like above then will it not overwrite?
+        # filter by userid and recipid and 
+        # rating object
+        #update objectname.attributename=value
+        #in crud as dbsession.add and
+
 
 # connect to your database before app.run gets called. 
 # If you don’t do this, Flask won’t be able to access your database!

@@ -18,11 +18,15 @@ from random import choice, randint
 os.system('dropdb searchrecipe')
 os.system('createdb searchrecipe')
 
-#model.connect_to_db(server.app)
-# ????? since my server.py is not ready
+#My server is ready
+#connect_to_db(server.app)
+#OR
+#from server import app
+#connect_to_db(app)
+
+# since my server.py is not ready
 from flask import Flask
 app = Flask(__name__)
-
 connect_to_db(app)
 db.create_all()
 
@@ -121,16 +125,16 @@ while i < 10:
 
 
 # rating =  create_rating(4,'very tasty', True, False, 1,1)
-i =0
-while i < 10:
-    rating = randint(1, 5)
-    if i % 2 == 0:
-        favorite = True
-    else:
-        favorite = False 
+# i =0
+# while i < 10:
+#     rating = randint(1, 5)
+#     if i % 2 == 0:
+#         favorite = True
+#     else:
+#         favorite = False 
 
-    create_rating(rating,'very tasty', favorite, favorite, rec_in_db[i].recipe_id, user_in_db[i].user_id)
-    i+= 1
+#     create_rating(rating,'very tasty', favorite, favorite, rec_in_db[i].recipe_id, user_in_db[i].user_id)
+#     i+= 1
 
 
 
