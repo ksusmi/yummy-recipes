@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %} My Favorites {% endblock %}
+{% block content %}
+
+<!--<div class="recipe-info-section">-->
+    <div class="center">
+      <div class="home2">
+          <h1> My favorite recipes</h1>
+        {% for favorite in fav_list %}
+        <div class="home2_first">
+          <a class = "card-titlelink" href = "/recipe/details?id={{ favorite['recipe_id'] }}" title = "{{favorite.title}}">
+          <p>{{favorite.title}}</p> </a>
+          <p>{{favorite.description}}</p>
+        </div>
+        <BR>
+        {% endfor %}
+      </div>
+  
+      <div class="home2">
+          <h1> My Own Recipes</h1>
+        {% for my_recipe in my_recipe_list%}
+        <div class="home2_second">
+          <p>{{my_recipe.title}}</p>
+          <p>{{my_recipe.description}}</p>
+        </div>
+        <BR>
+        {% endfor %}
+      </div>
+    </div>
+  <!--</div>-->
+
+{% endblock %}

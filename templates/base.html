@@ -7,6 +7,8 @@
   <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"> -->
 
   <link rel="stylesheet" href="/static/css/recipe.css">
+  <link rel="stylesheet" href="/static/css/favorite.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 
   <style>
     body  {
@@ -18,8 +20,13 @@
 
     </style>
 
+
+
+
+
 </head>
 <body>
+
   <div class = "container">
     <h1>
       <a href="/">Yummy Recipes</a>
@@ -34,10 +41,10 @@
           <!--<input type="submit" value="Log Out">-->
          </form>
 
-         <a href = "/favorites"> Favorites</a>
+         <a href = "/my-fav"> My Favorites</a>
 
          <br>
-         <a href = "/addyourrecipe">Add  Your Recipe</a>
+         <a href = "/add-your-recipe">Add  Your Recipe</a>
          {% else %}
         
         <!--<a href="/login">Login</a> -->
@@ -48,8 +55,14 @@
     
         </div> 
      
+        {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+          {% endwith %}
 
   {% block content %} CONTENT HERE {% endblock %}
+
   
 </body>
 </html>

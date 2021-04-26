@@ -68,10 +68,10 @@ def create_recipeingredient(ingredient_id, recipe_id, quantity):
 
     return recipeingredient
 
-def create_recipe(title, description, prep_time, cook_time, dishtype_id, cuisine_id,diet_id, instructions,url):
+def create_recipe(title, description, prep_time, cook_time, dishtype_id, cuisine_id,diet_id, instructions,url, user_id):
     """Create and return the recipe created """
 
-    recipe = Recipe(title = title, description= description, prep_time= prep_time, cook_time=cook_time, dishtype_id= dishtype_id, cuisine_id=cuisine_id, diet_id=diet_id, instructions= instructions,url=url)
+    recipe = Recipe(title = title, description= description, prep_time= prep_time, cook_time=cook_time, dishtype_id= dishtype_id, cuisine_id=cuisine_id, diet_id=diet_id, instructions= instructions,url=url,user_id=user_id)
 
     db.session.add(recipe)
     db.session.commit()
@@ -88,6 +88,8 @@ def create_rating(rating, review_notes, favorite, external, recipe_id, title_ext
     db.session.commit()
 
     return rating
+
+
 
 def get_all_recipes():
     recipes = Recipe.query.all()
@@ -108,15 +110,51 @@ def get_user(email):
 def get_user_by_userid(user_id):
     return User.query.filter(User.user_id == user_id).first()
 
-# def insert_user_favorite_data():
-#         insert(user_table).values(name='username', fullname='Full Username')
+def get_dishtype():
+    return dishtype_list_to_dict(DishType.query.all())
 
-
-
+def get_diet():
     
-  
+    return diet_list_to_dict(Diet.query.all())
 
-   
+def get_cuisine():
+    return cuisine_list_to_dict(Cuisine.query.all())
+
+def get_ingredients():
+    return ingredient_list_to_dict(Ingredient.query.all())
+
+def get_unit():
+    return unit_list_to_dict(Ingredient.query.all())
+
+def diet_list_to_dict(list_obj):
+    dict_obj={}
+    for obj1 in list_obj:
+        dict_obj[obj1.diet_id] = obj1.diet_name
+    return dict_obj
+
+def dishtype_list_to_dict(list_obj):
+    dict_obj={}
+    for obj1 in list_obj:
+        dict_obj[obj1.dishtype_id] = obj1.dishtype_name
+    return dict_obj
+
+def cuisine_list_to_dict(list_obj):
+    dict_obj={}
+    for obj1 in list_obj:
+        dict_obj[obj1.cuisine_id] = obj1.cuisine_name
+    return dict_obj
+
+def ingredient_list_to_dict(list_obj):
+    dict_obj={}
+    for obj1 in list_obj:
+        dict_obj[obj1.ingredient_id] = obj1.ingredient
+    return dict_obj 
+
+def unit_list_to_dict(list_obj):
+    dict_obj={}
+    for obj1 in list_obj:
+        dict_obj[obj1.ingredient_id] = obj1.unit
+    return dict_obj
 
 
 

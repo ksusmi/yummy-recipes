@@ -1,53 +1,29 @@
 {% extends 'base.html' %}
 {% block title %} Login Page {% endblock %}
 {% block content %}
-
-
-
-    <form class="form-signin" action = "/signin" method = "POST">
-  
-
-
+    <form class="form-signin" action = "/signin" method = "POST"> 
   <h2 class="form-signin-heading">Please Login</h2>
+  <div>
   <input type = "email" name = "email" placeholder = "Email Address" required>
-  <br>
+  </div>
+  
+  <div>
   <input type = "password" name = "password" placeholder = "Password" required>
-  <br><br>
+  </div>
+  <br>
+  <div>
   <button type = "submit" class = "loginButton"> Sign In</button>
+  </div>
+
   <br>  
   <a href="/signup">Sign Up</a>
-  <!--<form class="form-signup" action = "/signup" method = "POST">
-  <button type = "submit" class = "signupButton"> Sign Up</button>-->
 
-  {% with messages = get_flashed_messages() %}
+  {#{% with messages = get_flashed_messages() %}
   {% for message in messages %}
       <div class="alert alert-warning">{{ message }}</div>
   {% endfor %}
-  {% endwith %}
-
-<!----
-  <div class="form-group">
-    <label for="email-field" class="sr-only">Email Address</label>
-    <input type="email"
-           name="email"
-           class="form-control input-lg"
-           placeholder="Email Address"
-           required
-           autofocus>
-  </div>
-
-  <div class="form-group">
-    <label for="password-field" class="sr-only">Password</label>
-    <input type="password"
-           name="password"
-           class="form-control input-lg"
-           placeholder="Password"
-           required>
-  </div>
-
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In
-  </button>
--->
+  {% endwith %} #}
+ 
 </form>
 
 {% endblock %}

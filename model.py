@@ -105,10 +105,10 @@ class Recipe(db.Model):
     recipe_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     title = db.Column(db.String)
     description = db.Column(db.Text)
-    #####???????????????????????? duration
     prep_time = db.Column(db.Integer, nullable = True,)
     cook_time = db.Column(db.Integer, nullable = True,)
     dishtype_id =db.Column(db.Integer, db.ForeignKey('dishtypes.dishtype_id'))
+    user_id =db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable = False)
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisines.cuisine_id'))
     diet_id = db.Column(db.Integer, db.ForeignKey('diets.diet_id')) 
     instructions = db.Column(db.Text)
@@ -117,6 +117,7 @@ class Recipe(db.Model):
     dishtype = db.relationship('DishType', backref='recipes')
     cuisine = db.relationship('Cuisine', backref='recipes')
     diet = db.relationship('Diet', backref='recipes')
+    user = db.relationship('User', backref='recipes')
 
     def __repr__(self):
         return f'<Recipe recipe_id={self.recipe_id} title={self.title}>'
@@ -141,28 +142,10 @@ class Rating(db.Model):
     
     #recipe =db.relationship('Recipe', backref='ratings')
     user = db.relationship('User', backref='ratings')
-    
-    #sequence
-    #psql
-    #drop table tablename;
-    #model interactively
-    #db.create_all()
-    #add data
 
 
     def __repr__(self):
         return f'<Rating id={self.id} recipe_id={self.recipe_id} user_id={self.user_id} rating={self.rating} review_notes={self.review_notes} favorite={self.favorite} external={self.external}>'
-
-# class AddToFavorite(db.Model):
-#     """A Recipe ."""
-
-#     __tablename__ = 'addtofavorites'
-
-#     addtofav_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     addtofav_recipe_id =
-#     addtofav_user_id = 
-#     addtofav_title = db.Column(db.String)
-#     addtofav_description = db.Column(db.Text)
 
 
 def connect_to_db(flask_app, db_uri='postgresql:///searchrecipe', echo=False):

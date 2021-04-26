@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %} Add Your Own Recipe {% endblock %}
+{% block content %}
+
+    <form id = "form-submityourrecipe" class="form-submityourrecipe" action = "/submit-your-recipe" method="POST">
+
+        <h2 class="form-yourrecipe-heading">Add Your Recipe</h2>
+        <input type = "recipe-title" name = "recipe-title" placeholder = "Recipe Title" required>
+        <br>
+        <textarea id="description" placeholder= "Short Desc For Recipe" name = "description" required></textarea>
+        <br>
+        <textarea id="instructions" placeholder= "Instructions For Recipe" name = "instructions" required></textarea>
+        <br>
+        <input type = "prep-time" name = "preptime" placeholder = "Prep Time" >
+        <br>
+        <input type = "cook-time" name = "cooktime" placeholder = "Cook Time" >
+        <br> <br>
+        
+        
+        <div>
+            Choose your Cuisines :
+
+            <select name="cuisine">
+                <option value=""> --Select-- </option>
+                {% for key, value in cuisine_picklist.items() %}
+                <option value= {{key}}>{{value}}</option>
+                {% endfor%}
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div>
+            Choose your diet :
+
+            <select name="diet">
+                <option value=""> --Select-- </option>
+                {% for key, value in diet_picklist.items() %}
+                <option value= {{key}}>{{value}}</option>
+                {% endfor%}
+                <option value="other">Other</option> 
+            </select>
+        </div>
+
+        <div>
+            Choose the DishType :
+            <select name="dishtype">
+                <option value=""> --Select-- </option>
+                {% for key, value in dish_picklist.items() %}
+                <option value= {{key}}>{{value}}</option>
+                {% endfor%}
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div>         
+            Choose your ingredients :
+            <select name="ingredients" id="ingredientsId" onchange="addingredient(this.value)" required>
+                <option value="">-- Select -- </option>
+                {% for key, value in ing_picklist.items() %}
+                <option value={{key}}>{{value}}</option>
+                {% endfor %}
+            </select>
+
+            <input type = "text" name = "ingredients" id = "my-ingredients" style = 'display:none;'>
+
+            <select name="measure" id="measureId" required>
+                <option value=""> -- Select -- </option>
+                {% for key, value in unit_picklist.items() %}
+                <option value={{key}}>{{value}}</option>
+                {% endfor %}
+                <option value="99"> Other </option>
+                </select>
+
+                <input type = "text" name = "quantity" id="quantityId" required>
+                <button type = "button" class = "add-your-ingredient-Button" onclick="addrowtotable()"> Add</button>
+                </div>
+                <br>
+                <div id= "ingredientlist" class="ingredientlist">
+                    <p>ingredient list</p>
+                    <table id="myTableData" border=".5" cellpadding="1">
+                    <tr class="ingredientlistHeaderRow">
+                        <td>&nbsp;</td>
+                        <td><b>Ingredient</b></td>
+                        <td><b>Measure</b></td>
+                        <td><b>Quantity</b></td>
+                        <td hidden="true"><b>IngredientId</b></td>
+                    </tr>
+                </table>
+                &nbsp;
+ 
+                </div>
+                <br>
+                <button type = "submit" class = "add-your-recipe-Button"> Add</button>
+                <br>
+                <script>
+                    function addingredient(val){
+                    var element = document.getElementById('my-ingredients');
+                    if (val == "1"){
+                        element.style.display = 'block'
+                    }
+                    else{
+                        element.style.display ='none';
+
+                    }
+                    var unittype = document.getElementById('measureId');
+                    unittype.value= document.getElementById('ingredientsId').value; 
+
+                    }
+                </script>
+
+            <script type="text/javascript" src="/static/js/app.js"></script>
+
+
+      
+        {#{% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="form-addyourrecipe">{{ message }}</div>
+        {% endfor %}
+        {% endwith %} #}
+      
+
+
+</form>
+
+
+{% endblock %}
