@@ -11,6 +11,7 @@ from random import choice, randint
 os.system('dropdb searchrecipe')
 os.system('createdb searchrecipe')
 
+
 #My server is ready
 #connect_to_db(server.app)
 

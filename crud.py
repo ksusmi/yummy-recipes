@@ -98,11 +98,22 @@ def get_all_recipes():
 
 def get_recipes_by_search(search):
     
-    #recipe_with_ingredient = db.session.query(Recipe).join(RecipeIngredient, RecipeIngredient.recipe_id == Recipe.recipe_id).join(Ingredient, Ingredient.ingredient == search)
-    #result = recipe_with_ingredient.all()
     recipe_with_ingredient= db.session.query(Recipe.recipe_id, Recipe.title).join(RecipeIngredient).join(Ingredient).filter(Ingredient.ingredient == search).all()
     
     return recipe_with_ingredient
+
+def get_recipes_by_recipe_id(recipe_id):
+    recipes = Recipe.query(Recipe.description, Recipe.title).filter(Recipe.recipe_id == rating.recipe_id).all()
+    return recipes
+
+def get_recipe_by_desc(user_id):
+    recipes = db.session.query(Recipe).filter(Recipe.user_id == user_id).order_by(Recipe.recipe_id.desc()).all()
+    return recipes
+
+
+def get_recipe_by_user_id(user_id):
+    recipes = Recipe.query.filter(Recipe.user_id == user_id).all()
+    return recipes
 
 def get_user(email):
     return User.query.filter(User.email == email).first()
@@ -110,11 +121,14 @@ def get_user(email):
 def get_user_by_userid(user_id):
     return User.query.filter(User.user_id == user_id).first()
 
+def get_user_fav_recipes(user_id):
+    fav_recipes_of_user= db.session.query(Recipe.recipe_id, Recipe.title, Recipe.instructions).join(RecipeIngredient).join(Ingredient).filter(User.user_id == user_id).all()
+    return fav_recipes_of_user
+
 def get_dishtype():
     return dishtype_list_to_dict(DishType.query.all())
 
 def get_diet():
-    
     return diet_list_to_dict(Diet.query.all())
 
 def get_cuisine():
@@ -155,8 +169,6 @@ def unit_list_to_dict(list_obj):
     for obj1 in list_obj:
         dict_obj[obj1.ingredient_id] = obj1.unit
     return dict_obj
-
-
 
 if __name__ == '__main__':
     # since my server.py is not ready so for now commenting and using below

@@ -2,7 +2,7 @@
 {% block title %} Search Result {% endblock %}
 {% block content %}
   
-{% if session['fname'] %}
+{% if session['user_id'] %}
 <h1>Welcome, {{ session['fname'] }}<h1>
   {% endif %}
   <div class = "search-result"> 
@@ -34,6 +34,7 @@
         </div>
       </div>
     </div>
+    &nbsp;
 
 <!-- 
     <div class= "recipe_card" role = "listitem">

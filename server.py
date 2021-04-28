@@ -33,6 +33,7 @@ def search():
     """get the search value from homepage and store in session."""
     search = request.args.get('search')
     session['search'] = search
+    print("################ Search from /search #########", search)
 
     return redirect('/search/results')
 
@@ -42,15 +43,24 @@ def search_result():
     if "user_id" in session:
 
         s = session['search']
-        response_json = rapidapi.get_recipe_by_ingredients(s)
-        print("search string******************" + s)
-        res =[]
-        for data in response_json:
-            ot={}         
-            ot['id'] = data['id']
-            ot['title'] = data['title']
-            ot['image'] = data['image']
-            res.append(ot)
+        #response_json = rapidapi.get_recipe_by_ingredients(s)
+        response_recipe_complex_json = rapidapi.get_recipe_complex_search(query=s, number=10)
+        res = response_recipe_complex_json["results"]
+        #print("#############################   Complex Search##############", response_recipe_complex_json)
+
+        # print("search string******************" + s)
+        # res =[]
+        # for data in response_json:
+        #     ot={}         
+        #     ot['id'] = data['id']
+        #     ot['title'] = data['title']
+        #     ot['image'] = data['image']
+        #     res.append(ot)
+        # return render_template('search-result.html', filtered_recipe = res)
+        
+        recipe_from_db = Recipe.query.filter(Recipe.instructions.like(s)).all()
+        print("################# recipe details from db ##########",recipe_from_db )
+
         return render_template('search-result.html', filtered_recipe = res)
 
     else:
@@ -60,7 +70,7 @@ def search_result():
 @app.route('/recipe/details')
 def get_recipe_details():
     user_id = session.get('user_id')
-    s = session['search']
+    #s = session['search']
     recipe_id = request.args['id']
     
     res1=[]
@@ -110,11 +120,10 @@ def login():
 
 @app.route('/signin', methods = ["POST"])
 def sign_in():
-    #print(request.origin)
-
     email = request.form.get("email")
     password = request.form.get("password")
     user = get_user(email)
+    print (email, password)
     # if password matches and is in db
     if user and password == user.password:
         session["user_id"] = user.user_id
@@ -122,7 +131,6 @@ def sign_in():
         print(session, 'SESSION!!!!!!')
         flash("Logged in as %s" % user.fname)
         return redirect('/')
-
 
     # email is in db but typed wrong pwd
     elif user and email == user.email:
@@ -135,15 +143,13 @@ def sign_in():
        return redirect('/login')
 
 @app.route('/logout')
-def user_logout():  
-
-    user_id = session.get('user_id')
-    if user_id:
-        user = get_user_by_userid(user_id)
-        session.clear()
-        return render_template("logout.html", user=user)
-    else:
-        return redirect ("/login")
+def user_logout():
+    """ Logout """  
+  
+    #del session["user_id"]
+    session.clear()
+    flash ("Logged Out")
+    return redirect ("/")
 
 
 @app.route('/signup', methods = ["GET", "POST"])
@@ -175,7 +181,7 @@ def favorite():
             if rating.external:
                 fav_dict["title"] = rating.title_ext
                 fav_dict["description"] = rating.description_ext
-            #if rating.external == False:
+
             else:
                 recipes = Recipe.query.filter(Recipe.recipe_id == rating.recipe_id).all()
                 print("##########################", rcipes)
@@ -183,13 +189,15 @@ def favorite():
                 fav_dict["description"] = recipes.description
             fav_list.append(fav_dict)
         #recipes = Recipe.query(Recipe.description, Recipe.title).filter(Recipe.recipe_id == rating.recipe_id).all()
-        recipes = Recipe.query.filter(Recipe.user_id == user_id).all()
-        print("My Recipes", recipes)
+        #recipes = Recipe.query.filter(Recipe.user_id == user_id).all()
+        recipes = db.session.query(Recipe).filter(Recipe.user_id == user_id).order_by(Recipe.recipe_id.desc()).all()
+        print("########## My Recipes sorted ##########", recipes)
         my_recipe_list =[]
         for recipe in recipes:
             rec_dict={}
             rec_dict["title"] = recipe.title
             rec_dict["description"] = recipe.description
+            rec_dict["instructions"] = recipe.instructions
             my_recipe_list.append(rec_dict)
         
     return render_template('my-favorites.html', fav_list = fav_list, my_recipe_list=my_recipe_list)
@@ -210,14 +218,10 @@ def add_your_recipe():
 @app.route('/submit-your-recipe', methods = ["POST"])
 def submit_your_recipe():
     if 'user_id' in session:
-
         print("request data - " , request.form)
-
         user_id = session.get('user_id')
         recipe_title = request.form.get("recipe-title")
         recipe_instructions = request.form.get("instructions")
-        
-
         #prep_time = request.form.get("prep-time")
         if request.form.get("preptime") == "":
             prep_time = 0
@@ -247,8 +251,6 @@ def submit_your_recipe():
             dishtype = request.form.get("dishtype")
 
         # ingredients = request.form.get("ingredients")
-
-        #quantity = request.form.get("quantity")
         url = ""
         
         if request.form.get("ingrow") is None:
@@ -268,7 +270,6 @@ def submit_your_recipe():
             # new recipe ingredient rows from html[['1', '3', '3', 'papaya'], ['2', '3', '3'], ['1', '3', '3', 'test ingredient']]
             # ['1', '3', '3', 'papaya']
             # ingredient_list[0] = ingredient_id, ingredient_list[1] = unit,ingredient_list[2] = quantity, if other ingredient_list[3] = name,
-
             ingredient_list = ingredient_row.split(',')
             ingredients.append(ingredient_list)
             i += 1
@@ -281,17 +282,19 @@ def submit_your_recipe():
                 print("ingredient_list - ", ingredient_list)
                 if ingredient_list[0] == "1":
                     #check_new_ing = Ingredient.query().filter(Ingredient.ingredient == ingredient_list[3]).first() 
-                    check_new_ing = db.session.query(Ingredient).filter_by(ingredient = 'davidism').scalar()
+                    check_new_ing = db.session.query(Ingredient).filter_by(ingredient = ingredient_list[3]).scalar()
+                    print("############### new ingredient check ##################",check_new_ing)
                     if check_new_ing:
                         ingredient_to_insert = check_new_ing.ingredient_id
                     else:
-                        new_ingredient = create_ingredient(ingredient_list[3], int(ingredient_list[1]))
+                        new_ingredient = create_ingredient(ingredient_list[3], ingredient_list[1])
                         ingredient_to_insert = new_ingredient.ingredient_id
-                        print("New Ingredient Added", Ingredient.query.filter(Ingredient.ingredient_id == ingredient_to_insert).all())                
+                        print("############### New Ingredient Added ################", new_ingredient)
+                        #print("New Ingredient Added", Ingredient.query.filter(Ingredient.ingredient_id == ingredient_to_insert).all())                
                 else:
                     ingredient_to_insert = int(ingredient_list[0])
                         
-                create_recipeingredient(ingredient_to_insert, new_recipe_id, int(ingredient_list[2]))
+                create_recipeingredient(ingredient_to_insert, new_recipe_id, ingredient_list[2])
 
         print("##############  Recipe Created #################", Recipe.query.filter(Recipe.recipe_id == new_recipe_id).all())
         print("##############  Recipe Ingredients Created #################",RecipeIngredient.query.filter(RecipeIngredient.recipe_id == new_recipe_id).all())
@@ -322,25 +325,7 @@ def add_to_your_favorite():
         return redirect(f'/recipe/details?id={recipe_id}')
 
 
-#use javascript whenpage loads
-#div with text box hidden
-#submit--- ajax req to add to db
-# @app.route('/addreview')
-# def add_review():
-#     # search this user_id and recipe_id in the table
-#     # then add the review to this rating table under this user_id 
-#     # how to update only one entry to the table
-#     # create_rating('', review_notes, "", "", "", "", "", user_id)
-#     # if i do like above then will it not overwrite?
-
-
         #check_rating = Rating.query.filter(Rating.user_id == user_id).filter( Rating.recipe_id == recipe_id).filter(Rating.external == external).first()
-
-        # filter by userid and recipid and 
-        # rating object
-        #update objectname.attributename=value
-        #in crud as dbsession.add and
-
 
 # connect to your database before app.run gets called. 
 # If you don’t do this, Flask won’t be able to access your database!

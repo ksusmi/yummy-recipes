@@ -59,3 +59,13 @@ def get_recipe_nutriinfo(recipeid):
 
 #def get_recipe_info_widget(recipeid):
 
+def get_recipe_complex_search(**filters):
+    querystring = {}
+    recipe_info_endpoint = "recipes/complexSearch" #"recipes/search"
+    #cuisine=cuisine, exclude_cuisine=exclude_cuisine, diet=diet, intolerances=intolerances, equipment=equipment, include_ingredients=include_ingredients, exclude_ingredients=exclude_ingredients
+    #querystring = {"query":query,"diet":"vegetarian","excludeIngredients":"coconut","intolerances":"egg, gluten","number":"10","offset":"0","type":"main course"}
+    querystring = filters
+    recipe_info = requests.request("GET", url + recipe_info_endpoint, headers=headers, params=querystring).json()
+
+    return recipe_info
+

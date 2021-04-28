@@ -72,12 +72,13 @@ function addrowtotable(){
      
         row.insertCell(0).innerHTML= '<input type="button" value = "Delete" onClick="Javacsript:deleteRow(this)">';
         if(IngredientName.value == 1){
-            value = IngredientName.value + "," + units.value + "," + quantity.value + ","+ ingother.value;
+            //value = IngredientName.value + "," + units.value + "," + quantity.value + ","+ ingother.value;
+            value = IngredientName.value + "," + units.options[units.value].text + "," + quantity.value + ","+ ingother.value;
             row.insertCell(1).innerHTML= ingother.value; 
         }
         else{    
         row.insertCell(1).innerHTML= IngredientName.options[IngredientName.value].text; 
-        value = IngredientName.value + "," + units.value + "," + quantity.value;
+        value = IngredientName.value + "," + units.options[units.value].text + "," + quantity.value;
         }
         row.insertCell(2).innerHTML= units.options[units.value].text;
         row.insertCell(3).innerHTML= quantity.value;
