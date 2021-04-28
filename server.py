@@ -8,7 +8,7 @@
 
 from flask import (Flask, render_template, request, flash, session,
                    redirect, url_for)
-from crud import create_user, create_dishtype, create_cuisine, create_diet, create_ingredient, create_recipeingredient, create_recipe, create_rating, get_all_recipes,get_recipes_by_search, get_user, get_user_by_userid,get_dishtype, get_diet, get_cuisine, get_ingredients, get_unit
+from crud import create_user, create_dishtype, create_cuisine, create_diet, create_ingredient, create_recipeingredient, create_recipe, create_rating, get_all_recipes,get_recipes_by_search, get_recipes_by_recipe_id, get_user, get_user_by_userid,get_dishtype, get_diet, get_cuisine, get_ingredients, get_unit, get_recipe_from_db
 from model import db, User, DishType, Cuisine, Diet, Ingredient, RecipeIngredient, Recipe, Rating, connect_to_db
 import requests
 import rapidapi
@@ -27,6 +27,7 @@ def homepage():
     """View homepage."""
 
     return render_template('homepage.html')
+    #return render_template('homepagecopy.html')
 
 @app.route('/search')
 def search():
@@ -43,25 +44,11 @@ def search_result():
     if "user_id" in session:
 
         s = session['search']
-        #response_json = rapidapi.get_recipe_by_ingredients(s)
         response_recipe_complex_json = rapidapi.get_recipe_complex_search(query=s, number=10)
         res = response_recipe_complex_json["results"]
-        #print("#############################   Complex Search##############", response_recipe_complex_json)
-
-        # print("search string******************" + s)
-        # res =[]
-        # for data in response_json:
-        #     ot={}         
-        #     ot['id'] = data['id']
-        #     ot['title'] = data['title']
-        #     ot['image'] = data['image']
-        #     res.append(ot)
-        # return render_template('search-result.html', filtered_recipe = res)
-        
-        recipe_from_db = Recipe.query.filter(Recipe.instructions.like(s)).all()
-        print("################# recipe details from db ##########",recipe_from_db )
-
-        return render_template('search-result.html', filtered_recipe = res)
+        res_db = get_recipe_from_db(s)
+        print("############  result from db ##############", res_db)
+        return render_template('search-result.html', filtered_recipe = res_db + res)
 
     else:
         flash ("Please Login before you start your search")
@@ -69,47 +56,33 @@ def search_result():
 
 @app.route('/recipe/details')
 def get_recipe_details():
+    #recipe_details = {}
     user_id = session.get('user_id')
     #s = session['search']
-    recipe_id = request.args['id']
-    
-    res1=[]
-    ot1 = {}
+    rec_id = request.args['id']
+    if rec_id.startswith("YR"):
+        recipe_id_list = rec_id.split('-')
+        print("############ rec_details ##########", rec_id,  " ", recipe_id_list)
+        recipe_id = recipe_id_list[1]
+        recipe_details = get_recipes_by_recipe_id(recipe_id)
+    else: 
+        recipe_id = request.args['id']
+        recipe_details= rapidapi.get_recipe_details_by_id(recipe_id)
+        recipe_nutritions = rapidapi.get_recipe_nutriinfo(recipe_id)
+        recipe_details['calories'] = recipe_nutritions['calories']
+        recipe_details['carbs'] = recipe_nutritions['carbs']
+        recipe_details['fat'] = recipe_nutritions['fat']
+        recipe_details['protein'] = recipe_nutritions['protein']
 
-    recipe_details= rapidapi.get_recipe_details_by_id(recipe_id)
-
-    print("**********************************\n ****************************")
-    print(recipe_id)
-    print("**********************************\n ****************************")
-
-    cuisines= recipe_details["cuisines"]
-    dishType = recipe_details["dishTypes"]
-    diets = recipe_details["diets"]
-
-    ot1['vegetarian'] = recipe_details['vegetarian']
-    ot1['vegan'] =recipe_details['vegan']
-    ot1['glutenFree'] =recipe_details['glutenFree']
-    ot1['dairyFree'] = recipe_details['dairyFree']
-    ot1['veryHealthy'] =recipe_details['veryHealthy']
-    ot1['pricePerServing'] =recipe_details['pricePerServing']
-    ot1['readyInMinutes'] = recipe_details['readyInMinutes']
-
-    recipe_nutritions = rapidapi.get_recipe_nutriinfo(recipe_id)
-
-    ot1['calories'] = recipe_nutritions['calories']
-    ot1['carbs'] = recipe_nutritions['carbs']
-    ot1['fat'] = recipe_nutritions['fat']
-    ot1['protein'] = recipe_nutritions['protein']
-    res1.append(ot1)
-
-    check_rating = Rating.query.filter(Rating.user_id == user_id).filter( Rating.recipe_id == recipe_id).all()
-    if check_rating:
-        show_fav_link = False
-    else:
-        show_fav_link = True
+    # check_rating = Rating.query.filter(Rating.user_id == user_id).filter( Rating.recipe_id == recipe_id).all()
+    # if check_rating:
+    #     show_fav_link = False
+    # else:
+    #     show_fav_link = True
  
-    return render_template('recipe-details.html', recipe=recipe_details, res = res1, cuisines = cuisines,dishType=dishType, diets=diets, show_fav_link = show_fav_link)
-
+    #return render_template('recipe-details.html', recipe=recipe_details, res = res1, cuisines = cuisines,dishType=dishType, diets=diets, show_fav_link = show_fav_link)
+    return render_template('recipe-details.html', recipe=recipe_details, show_fav_link = "show_fav_link")
+    #return render_template('recipe-details.html', recipe=recipe_details, show_fav_link = show_fav_link)
 
 @app.route('/login')
 def login():
@@ -171,8 +144,6 @@ def favorite():
     """View favorites page of user."""
     if 'user_id' in session:
         user_id = session.get('user_id')
-        #User.query.filter(User.user_id == user_id).join
-        #fav_recipes_of_user= db.session.query(Recipe.recipe_id, Recipe.title, Recipe.instructions).join(RecipeIngredient).join(Ingredient).filter(User.user_id == user_id).all()
         ratings = Rating.query.filter(Rating.user_id == user_id).all()
         fav_list=[]
         for rating in ratings:
@@ -188,8 +159,6 @@ def favorite():
                 fav_dict["title"] = recipes.title
                 fav_dict["description"] = recipes.description
             fav_list.append(fav_dict)
-        #recipes = Recipe.query(Recipe.description, Recipe.title).filter(Recipe.recipe_id == rating.recipe_id).all()
-        #recipes = Recipe.query.filter(Recipe.user_id == user_id).all()
         recipes = db.session.query(Recipe).filter(Recipe.user_id == user_id).order_by(Recipe.recipe_id.desc()).all()
         print("########## My Recipes sorted ##########", recipes)
         my_recipe_list =[]
@@ -222,7 +191,6 @@ def submit_your_recipe():
         user_id = session.get('user_id')
         recipe_title = request.form.get("recipe-title")
         recipe_instructions = request.form.get("instructions")
-        #prep_time = request.form.get("prep-time")
         if request.form.get("preptime") == "":
             prep_time = 0
         else:
@@ -249,13 +217,10 @@ def submit_your_recipe():
             dishtype = 1
         else:
             dishtype = request.form.get("dishtype")
-
-        # ingredients = request.form.get("ingredients")
         url = ""
         
         if request.form.get("ingrow") is None:
             ingrow = 0
-            #Raise message 
             flash("enter at least one ingredient")
         else:
             ingrow = request.form.get("ingrow")
@@ -290,7 +255,6 @@ def submit_your_recipe():
                         new_ingredient = create_ingredient(ingredient_list[3], ingredient_list[1])
                         ingredient_to_insert = new_ingredient.ingredient_id
                         print("############### New Ingredient Added ################", new_ingredient)
-                        #print("New Ingredient Added", Ingredient.query.filter(Ingredient.ingredient_id == ingredient_to_insert).all())                
                 else:
                     ingredient_to_insert = int(ingredient_list[0])
                         
@@ -310,10 +274,8 @@ def add_to_your_favorite():
         recipe_title = request.form.get("recipe-title")
         recipe_instructions = request.form.get("recipe-instructions")
         review_notes= request.form.get("review-notes")
-        #recipe = Recipe.query.get(recipe_id)
         if Recipe.query.get(recipe_id) is None:
             external = True
-            #external = request.form.get("external")
         favorite = True
         check_rating = Rating.query.filter(Rating.user_id == user_id).filter( Rating.recipe_id == recipe_id).filter(Rating.external == external).all()
         if not  check_rating:
@@ -325,7 +287,6 @@ def add_to_your_favorite():
         return redirect(f'/recipe/details?id={recipe_id}')
 
 
-        #check_rating = Rating.query.filter(Rating.user_id == user_id).filter( Rating.recipe_id == recipe_id).filter(Rating.external == external).first()
 
 # connect to your database before app.run gets called. 
 # If you don’t do this, Flask won’t be able to access your database!

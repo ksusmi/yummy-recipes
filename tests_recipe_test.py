@@ -1,9 +1,51 @@
 from unittest import TestCase
 from server import app
 from model import connect_to_db, db
-from flask import session
+from flask import session, url_for
 
 
+
+class FlaskTestRecipes(TestCase):
+    def setUp(self):
+        """Stuff to do before every test."""
+
+        # # Get the Flask test client
+        # self.client = app.test_client()
+
+        # # Show Flask errors that happen during tests
+        # app.config['TESTING'] = True
+        # connect_to_db(app, "postgresql:///TESTDB")
+
+        # # Create tables and add sample data
+        # db.create_all()
+
+        # with self.client as c:
+        #     with c.session_transaction() as sess:
+        #         sess["user_id"] = 1
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.remove()
+        db.drop_all()
+        db.engine.dispose()
+
+    def test_recipe_details(self):
+        # Show Flask errors that happen during tests
+        app.config['TESTING'] = True
+        connect_to_db(app, "postgresql:///TESTDB")
+
+        # Create tables and add sample data
+        db.create_all()
+        with app.app_context():
+            with app.test_request_context():
+                with app.test_client() as client:
+                    with client.session_transaction() as sess:
+                        sess['user_id'] = 1
+                        result = client.get("/recipe/details", query_string = {"id": "YR-1"})
+                        self.assertEqual(result.status_code, 200)
+
+        
 
 class FlaskTestsBasic(TestCase):
     """Flask tests."""
@@ -81,33 +123,38 @@ class FlaskTestsDatabase(TestCase):
                                   follow_redirects=True)
 
 
-    def test_search_route(self):
-        """Test search result page."""
-        result = self.client.post("/signin",
-                                  data={"email": "sam.k@gmail.com", "password": "12345"},
-                                  )
+    # def test_search_route(self):
+    #     """Test search result page."""
+    #     result = self.client.post("/signin",
+    #                               data={"email": "sam.k@gmail.com", "password": "12345"},
+    #                               )
 
-        #result = self.client.get("/search", data={"search": "pasta"}, follow_redirects=True)
-        result = self.client.get("/search", query_string={"search": "pasta"}, follow_redirects=True)
+    #     #result = self.client.get("/search", data={"search": "pasta"}, follow_redirects=True)
+    #     result = self.client.get("/search", query_string={"search": "pancake"}, follow_redirects=True)
 
-        #print (result.data)
-        self.assertEqual(result.status_code, 200)
-        self.assertIn(b"search", result.data)
+    #     #print (result.data)
+    #     self.assertEqual(result.status_code, 200)
+    #     self.assertIn(b"search", result.data)
         
-    def test_recipe_details(self):
-        """Test recipe details page."""
+    # def test_recipe_details(self):
+    #     """Test recipe details page."""
 
-        self.client.post("/signin",
-                                  data={"email": "sam.k@gmail.com", "password": "12345"},
-                                  follow_redirects=True)
-        result = self.client.get("/recipe/details", query_string={"id ": "670998"}, follow_redirects=True)
-        print ("++++++++++++ /details+++++++++++",self.client)
+    #     # self.client.post("/signin",
+    #     #                           data={"email": "sam.k@gmail.com", "password": "12345"},
+    #     #                           follow_redirects=True)
+
+    #     with self.client.session_transaction() as sess:
+
+    #         sess['user_id'] = 1
+    #         sess['fname'] = "sam"
+    #         result = self.client.get("/recipe/details", query_string={"id ": "YR-1"}, follow_redirects=True)
+    #         print ("++++++++++++ /details+++++++++++",self.client)
         
-        import pdb; pdb.set_trace()
+    #     #import pdb; pdb.set_trace()
 
-        print(result.data)
-        self.assertEqual(result.status_code, 200)
-        self.assertIn(b"Italian Wedding Soup", result.data)
+    #     print(result.data)
+    #     self.assertEqual(result.status_code, 200)
+    #     self.assertIn(b"Italian Wedding Soup", result.data)
 
 #         
 
@@ -117,6 +164,9 @@ class FlaskTestsDatabase(TestCase):
 #         db.session.remove()
 #         db.drop_all()
 #         db.engine.dispose()
+
+
+
 
 # class FlaskTestsLoggedIn(TestCase):
 #     """Flask tests with user logged in to session."""

@@ -8,8 +8,10 @@ from model import db, User, DishType, Cuisine, Diet, Ingredient, RecipeIngredien
 #import server
 from random import choice, randint
 
-os.system('dropdb searchrecipe')
-os.system('createdb searchrecipe')
+ os.system('dropdb searchrecipe')
+ os.system('createdb searchrecipe')
+# os.system('dropdb TESTDB')
+# os.system('createdb TESTDB')
 
 
 #My server is ready
@@ -18,7 +20,8 @@ os.system('createdb searchrecipe')
 # since my server.py is not ready
 from flask import Flask
 app = Flask(__name__)
-connect_to_db(app)
+connect_to_db(app, "postgresql:///TESTDB")
+# connect_to_db(app)
 db.create_all()
 
 
