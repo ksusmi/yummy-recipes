@@ -1,10 +1,6 @@
 """CRUD operations."""
 
 from model import db, User, DishType, Cuisine, Diet, Ingredient, RecipeIngredient, Recipe, Rating, connect_to_db
-#from server import app
-
-
-# Functions start here!
 
 def create_user(fname, lname, email, password, mobile_no):
     """Create and return a new user."""
@@ -103,32 +99,33 @@ def get_recipes_by_search(search):
     return recipe_with_ingredient
 
 def get_recipes_by_recipe_id(recipe_id):
-    #recipes = Recipe.query(Recipe.instructions, Recipe.title).filter(Recipe.recipe_id == recipe_id).all()
-    #recipe_db = Recipe.query.filter(Recipe.recipe_id == recipe_id).all()
+
     recipe_dbs = db.session.query(Recipe, DishType.dishtype_name,Cuisine.cuisine_name,Diet.diet_name).join(DishType).join(Cuisine).join(Diet).filter(Recipe.recipe_id == recipe_id).all()
-    print ("################# get recipe from my db ######### ", recipe_dbs)
-    for recipe_db in recipe_dbs:
-        recipe_details = {}
-        recipe_details["id"] = recipe_db[0].recipe_id
-        recipe_details["title"] = recipe_db[0].title
-        recipe_details["instructions"] = recipe_db[0].instructions
-        recipe_details["image"] = "../static/img/generic_recipe.png"
-        recipe_details["dishTypes"] = recipe_db[1]
-        recipe_details["cuisines"] = recipe_db[2]
-        recipe_details["diets"] = recipe_db[3]
-        recipe_details["inregdientsWidget"] = " "
-        recipe_details["equipmentWidget"] = " "
-        recipe_details["calories"] = None
-        recipe_details["carbs"] = None
-        recipe_details["fat"] = None
-        recipe_details["protein"] = None
-        recipe_details["vegan"] = None
-        recipe_details["vegetarian"] = None
-        recipe_details["glutenFree"] = None
-        recipe_details["veryHealthy"] = None
-        recipe_details["pricePerServing"] = None
-        recipe_details["readyInMinutes"] = None
-        recipe_details["dairyFree"] = None
+    
+    recipe_db = recipe_dbs[0]
+    recipe_details = {}
+    recipe_details["id"] = recipe_db[0].recipe_id
+    recipe_details["title"] = recipe_db[0].title
+    recipe_details["instructions"] = recipe_db[0].instructions
+    recipe_details["image"] = "../static/img/generic_recipe.png"
+    recipe_details["dishTypes"] = recipe_db[1]
+    recipe_details["cuisines"] = recipe_db[2]
+    recipe_details["diets"] = recipe_db[3]
+    recipe_details["inregdientsWidget"] = " "
+    recipe_details["equipmentWidget"] = " "
+    recipe_details["bad_nutri"] = []
+    recipe_details["good_nutri"] = []
+    recipe_details["calories"] = None
+    recipe_details["carbs"] = None
+    recipe_details["fat"] = None
+    recipe_details["protein"] = None
+    recipe_details["vegan"] = None
+    recipe_details["vegetarian"] = None
+    recipe_details["glutenFree"] = None
+    recipe_details["veryHealthy"] = None
+    recipe_details["pricePerServing"] = None
+    recipe_details["readyInMinutes"] = None
+    recipe_details["dairyFree"] = None
     return recipe_details
 
 def get_recipe_by_desc(user_id):
@@ -150,10 +147,6 @@ def get_user_fav_recipes(user_id):
     fav_recipes_of_user= db.session.query(Recipe.recipe_id, Recipe.title, Recipe.instructions).join(RecipeIngredient).join(Ingredient).filter(User.user_id == user_id).all()
     return fav_recipes_of_user
 
-# def get():
-#     check_rating = Rating.query.filter(Rating.user_id == user_id).filter( Rating.recipe_id == recipe_id).filter(Rating.external == external).first()
-
-
 def get_dishtype():
     return dishtype_list_to_dict(DishType.query.all())
 
@@ -169,10 +162,8 @@ def get_ingredients():
 def get_unit():
     return unit_list_to_dict(Ingredient.query.all())
 
-
-
 def get_recipe_from_db(search):
-    list_obj = Recipe.query.filter(Recipe.title.ilike(search)).all()
+    list_obj = Recipe.query.filter(Recipe.title.ilike('%'+search+'%')).all()
     print ("******************** list_obj **************", list_obj)
     res_db_list = []
     for obj1 in list_obj:
@@ -188,6 +179,7 @@ def diet_list_to_dict(list_obj):
     dict_obj={}
     for obj1 in list_obj:
         dict_obj[obj1.diet_id] = obj1.diet_name
+        
     return dict_obj
 
 def dishtype_list_to_dict(list_obj):
@@ -214,39 +206,19 @@ def unit_list_to_dict(list_obj):
         dict_obj[obj1.ingredient_id] = obj1.unit
     return dict_obj
 
+def get_ingredient_by_name(ingredient):
+    return Ingredient.query.filter(Ingredient.ingredient.ilike(ingredient)).first()
+    #return Ingredient.query.filter(Ingredient.ingredient == ingredient).first()
 
-def search_by_ingredient():
-        if "user_id" in session:
+def get_recipeingredients_by_recipeid(recipe_id):
+    return RecipeIngredient.query.filter(RecipeIngredient.recipe_id == recipe_id).all()
 
-            s = session['search']
-            response_json = rapidapi.get_recipe_by_ingredients(s)
-            recipe_from_db = Recipe.query.filter(Recipe.title.ilike(s)).all()
-            print("search string******************" + s)
-            res =[]
-            for data in response_json:
-                ot={}         
-                ot['id'] = data['id']
-                ot['title'] = data['title']
-                ot['image'] = data['image']
-                res.append(ot)
-            return render_template('search-result.html', filtered_recipe = res)
-        
-            recipe_from_db = Recipe.query.filter(Recipe.title.ilike(s)).all()
-            print("################# recipe details from db ##########",recipe_from_db )
-            return render_template('search-result.html', filtered_recipe = res)
+def get_ingredients_for_recipe(recipe_id):
 
-        else:
-            flash ("Please Login before you start your search")
-            return redirect ("/login")
-
-
-
+    return db.session.query(RecipeIngredient.quantity, Ingredient.ingredient, Ingredient.unit).join(Ingredient).filter(RecipeIngredient.recipe_id == recipe_id).all()
 
 
 if __name__ == '__main__':
-    # since my server.py is not ready so for now commenting and using below
     from flask import Flask
     app = Flask(__name__)
-    #server is ready
-    #from server import app
     connect_to_db(app)

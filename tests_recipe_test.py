@@ -1,81 +1,73 @@
 from unittest import TestCase
 from server import app
 from model import connect_to_db, db
-from flask import session, url_for
+from flask import session
 
+import test_seed
+import server
 
+def mock_get_recipe_details_by_id(recipe_id):
+    return {"title": "TITLE", 
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Test-Logo.svg/783px-Test-Logo.svg.png",
+            "id": "ID",
+            "instructions": "INSTRUCTIONS",
+            "summary": "SUMMARY",
+            "cuisines": "CUSINES",
+            "dishTypes": "DISHTYPES",
+            "diets": "DIETS",
+            "vegan": "VEGAN",
+            "vegetarian": "VEGETARIAN",
+            "glutenFree": "GLUTENFREE",
+            "dairyFree": "DAIRYFREE",
+            "veryHealthy": "VERYHEALTHY",
+            "pricePerServing": "PRICEPERSERVING",
+            "readyInMinutes": "READYINMINUTES",
+            "inregdientsWidget": "INGREDIENTSWIDGET",
+            "equipmentWidget": "EQUIPMENTWIDGET"
+            }
 
-class FlaskTestRecipes(TestCase):
-    def setUp(self):
-        """Stuff to do before every test."""
+def mock_get_recipe_nutriinfo(recipe_id):
+    return {"calories": "CALORIES", "carbs": "CARBS", "fat": "FAT", "protein": "PROTEIN", "bad_nutri": "BAD_NUTRI", "good_nutri": "GOOD_NUTRI" }
 
-        # # Get the Flask test client
-        # self.client = app.test_client()
+# def mock_get_dishtype():
+#     return {"1": "snack"}
 
-        # # Show Flask errors that happen during tests
-        # app.config['TESTING'] = True
-        # connect_to_db(app, "postgresql:///TESTDB")
+# def mock_get_diet():
+#     return {"1": "vegan"}
 
-        # # Create tables and add sample data
-        # db.create_all()
+# def mock_get_cuisine():
+#     return {"1": "Indian"}
 
-        # with self.client as c:
-        #     with c.session_transaction() as sess:
-        #         sess["user_id"] = 1
+# def mock_get_ingredients():
+#     return {"1": "flour", "2": "salt", "3":"pepper"}
 
-    def tearDown(self):
-        """Do at end of every test."""
+# def mock_get_unit():
+#     return {"1": "cup", "2": "tbsp", "3":"tbsp"}
 
-        db.session.remove()
-        db.drop_all()
-        db.engine.dispose()
-
-    def test_recipe_details(self):
-        # Show Flask errors that happen during tests
-        app.config['TESTING'] = True
-        connect_to_db(app, "postgresql:///TESTDB")
-
-        # Create tables and add sample data
-        db.create_all()
-        with app.app_context():
-            with app.test_request_context():
-                with app.test_client() as client:
-                    with client.session_transaction() as sess:
-                        sess['user_id'] = 1
-                        result = client.get("/recipe/details", query_string = {"id": "YR-1"})
-                        self.assertEqual(result.status_code, 200)
-
-        
-
-class FlaskTestsBasic(TestCase):
-    """Flask tests."""
+class FlaskTestBasic(TestCase):
+    """ Flask tests. """
 
     def setUp(self):
-        """Stuff to do before every test."""
-
-        # Get the Flask test client
         self.client = app.test_client()
-
-        # Show Flask errors that happen during tests
         app.config['TESTING'] = True
-        connect_to_db(app, "postgresql:///TESTDB")
-
-        # Create tables and add sample data
+        app.config['SECRET_KEY'] = 'key'
+        connect_to_db(app, "postgresql:///testdb")
         db.create_all()
+        test_seed.create_example_data()
 
     def test_index(self):
-        """Test homepage page."""
+       """Test homepage page."""
 
-        result = self.client.get("/")
-        self.assertEqual(result.status_code, 200)
-        self.assertIn(b"Yummy Recipe", result.data)
+       result = self.client.get("/")
+       self.assertEqual(result.status_code, 200)
+       self.assertIn(b"Yummy Recipe", result.data)
 
     def test_login_page(self):
         """ Test login page loaded"""
         result = self.client.get("/login")
-        
         self.assertEqual(result.status_code, 200)
         self.assertIn(b"form-signin", result.data)
+
 
     def test_signin(self):
         """Test login."""
@@ -86,161 +78,114 @@ class FlaskTestsBasic(TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertIn(b"Yummy Recipes", result.data)
     
-    # def test_signup(self):
-    #     """ Test signup page """
-    #     result = self.client.post("/signup",
-    #                               data={"email": "sam.k@gmail.com", "password": "12345", "firstname": "sam", "lastname": "k", "mobile-no":"9522234414" },
-    #                               follow_redirects=True)
-    #     self.assertEqual(result.status_code, 200)
-    #     self.assertIn(b"Please Login", result.data)
+    def test_signup(self):
+        """ Test signup page """
+        result = self.client.post("/signup",
+                                  data={"email": "SRK.k@gmail.com", "password": "12345", "firstname": "sam", "lastname": "k", "mobile-no":"9522234414" },
+                                  follow_redirects=True)
+        self.assertEqual(result.status_code, 200)
+        self.assertIn(b"Yummy Recipe", result.data)
+    
+    def test_duplicate_signup(self):
+        """ Test signup page """
+        result = self.client.post("/signup",
+                                  data={"email": "sr.k@gmail.com", "password": "12345", "firstname": "sam", "lastname": "k", "mobile-no":"9522234414" },
+                                  follow_redirects=True)
+        self.assertEqual(result.status_code, 200)
+        self.assertIn(b"Please Login", result.data)
     
 
-    # def test_logout(self):
-    #     """ Test logout page """
-    #     result = self.client.post("/logout",
-    #                               follow_redirects=True)
-    #     self.assertEqual(result.status_code, 200)
-    #     
-    
-class FlaskTestsDatabase(TestCase):
-    """Flask tests that use the database."""
+    def test_logout(self):
+        """ Test logout page """
+        result = self.client.get("/logout",
+                                  follow_redirects=True)
+        self.assertIn(b"Logged Out", result.data)
+        self.assertEqual(result.status_code, 200)
+         
+    def tearDown(self):
+        """Do at end of every test."""
+        db.session.remove()
+        db.drop_all()
+        db.engine.dispose()
 
+class FlaskTestRecipes(TestCase):
     def setUp(self):
         """Stuff to do before every test."""
 
-        # Get the Flask test client
-        self.client = app.test_client()
         app.config['TESTING'] = True
+        app.config['SECRET_KEY'] = 'key'
+        self.client = app.test_client()
+
+        server.rapidapi.get_recipe_details_by_id = mock_get_recipe_details_by_id
+        server.rapidapi.get_recipe_nutriinfo = mock_get_recipe_nutriinfo
 
         # Connect to test database
-        connect_to_db(app, "postgresql:///TESTDB")
-
+        connect_to_db(app, "postgresql:///testdb")
         # Create tables and add sample data
         db.create_all()
+        test_seed.create_example_data()
 
-        self.client.post("/signin",
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess['user_id'] = 1
+                sess['fname'] = "jill0"
+    
+    def tearDown(self):
+        """Do at end of every test."""
+        db.session.remove()
+        db.drop_all()
+        db.engine.dispose()
+
+    def test_search_route(self):
+        """Test search result page."""
+        result = self.client.post("/signin",
                                   data={"email": "sam.k@gmail.com", "password": "12345"},
-                                  follow_redirects=True)
+                                  )
+        #result = self.client.get("/search", data={"search": "pasta"}, follow_redirects=True)
+        result = self.client.get("/search", query_string={"search": "pancake"}, follow_redirects=True)
+        self.assertEqual(result.status_code, 200)
+        self.assertIn(b"search", result.data)
 
+    def test_recipe_details(self):
+        result = self.client.get("/recipe/details", query_string = {"id": "YR-1"})
+        print("*"*20)
+        print(result.data)
+        self.assertEqual(result.status_code, 200)
 
-    # def test_search_route(self):
-    #     """Test search result page."""
-    #     result = self.client.post("/signin",
-    #                               data={"email": "sam.k@gmail.com", "password": "12345"},
-    #                               )
+    def test_create_your_recipe(self):
+        result = self.client.get('/add-your-recipe', query_string = {'recipe-title':"Title", "description": "Description", "instructions": "Instructions", "ingredients": "Ingredients", "measure":"Measure", "quantity":"Quantity"})
+        print("*"*40)
+        print(result.data)
+        self.assertEqual(result.status_code, 200)
 
-    #     #result = self.client.get("/search", data={"search": "pasta"}, follow_redirects=True)
-    #     result = self.client.get("/search", query_string={"search": "pancake"}, follow_redirects=True)
+    def test_fav_link(self):
+        result = self.client.get('/add-your-recipe', query_string = {'recipe-title':"Title", "instructions": "Instructions", "ingredients": "Ingredients", "measure":"Measure", "quantity":"Quantity"})
+        print("*"*40)
+        print(result.data)
+        self.assertEqual(result.status_code, 200)
 
-    #     #print (result.data)
-    #     self.assertEqual(result.status_code, 200)
-    #     self.assertIn(b"search", result.data)
-        
-    # def test_recipe_details(self):
-    #     """Test recipe details page."""
+    
+# class FlaskTestsDatabase(TestCase):
+#     """ Flask tests that use the database. """
+#     def setUp(self):
+#         app.config['TESTING'] = True
+#         #app.config['SECRET_KEY'] = 'key'
+#         self.client = app.test_client()
+#         connect_to_db(app, "postgresql:///testdb")
+#         db.create_all()
+#         test_seed.create_example_data()
 
-    #     # self.client.post("/signin",
-    #     #                           data={"email": "sam.k@gmail.com", "password": "12345"},
-    #     #                           follow_redirects=True)
-
-    #     with self.client.session_transaction() as sess:
-
-    #         sess['user_id'] = 1
-    #         sess['fname'] = "sam"
-    #         result = self.client.get("/recipe/details", query_string={"id ": "YR-1"}, follow_redirects=True)
-    #         print ("++++++++++++ /details+++++++++++",self.client)
-        
-    #     #import pdb; pdb.set_trace()
-
-    #     print(result.data)
-    #     self.assertEqual(result.status_code, 200)
-    #     self.assertIn(b"Italian Wedding Soup", result.data)
-
-#         
-
+#     def test_recipe_details(self):
+#         result = self.client.get("/recipe/details", query_string = {"id": "YR-1"})
+#         print("*"*20)
+#         print(result.data)
+#         self.assertEqual(b"Eggplant Pasta", result.status_code, 200)
+    
 #     def tearDown(self):
 #         """Do at end of every test."""
-
 #         db.session.remove()
 #         db.drop_all()
 #         db.engine.dispose()
-
-
-
-
-# class FlaskTestsLoggedIn(TestCase):
-#     """Flask tests with user logged in to session."""
-
-#     def setUp(self):
-#         """Stuff to do before every test."""
-
-#         app.config['TESTING'] = True
-#         app.config['RAPIDAPI_KEY'] = 'key'
-#         self.client = app.test_client()
-
-#         with self.client as c:
-#             with c.session_transaction() as sess:
-#                 sess['user_id'] = 1
-
-#     def test_important_page(self):
-#         """Test important page."""
-
-#         result = self.client.get("/important")
-#         self.assertIn(b"You are a valued user", result.data)
-
-
-# class FlaskTestsLoggedOut(TestCase):
-#     """Flask tests with user logged in to session."""
-
-#     def setUp(self):
-#         """Stuff to do before every test."""
-
-#         app.config['TESTING'] = True
-#         self.client = app.test_client()
-
-#     def test_important_page(self):
-#         """Test that user can't see important page when logged out."""
-
-#         result = self.client.get("/important", follow_redirects=True)
-#         self.assertNotIn(b"You are a valued user", result.data)
-#         self.assertIn(b"You must be logged in", result.data)
-
-
-# class FlaskTestsLogInLogOut(TestCase):  # Bonus example. Not in lecture.
-#     """Test log in and log out."""
-
-#     def setUp(self):
-#         """Before every test"""
-
-#         app.config['TESTING'] = True
-#         self.client = app.test_client()
-
-#     def test_login(self):
-#         """Test log in form.
-
-#         Unlike login test above, 'with' is necessary here in order to refer to session.
-#         """
-
-#         with self.client as c:
-#             result = c.post('/login',
-#                             data={'user_id': '42', 'password': 'abc'},
-#                             follow_redirects=True
-#                             )
-#             self.assertEqual(session['user_id'], '42')
-#             self.assertIn(b"You are a valued user", result.data)
-
-#     def test_logout(self):
-#         """Test logout route."""
-
-#         with self.client as c:
-#             with c.session_transaction() as sess:
-#                 sess['user_id'] = '42'
-
-#             result = self.client.get('/logout', follow_redirects=True)
-
-#             self.assertNotIn(b'user_id', session)
-#             self.assertIn(b'Logged Out', result.data)
-
 
 if __name__ == "__main__":
     import unittest

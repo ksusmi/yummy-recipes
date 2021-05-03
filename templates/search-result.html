@@ -2,68 +2,49 @@
 {% block title %} Search Result {% endblock %}
 {% block content %}
   
-{% if session['user_id'] %}
+{% if 'user_id' in session %}
 <h1>Welcome, {{ session['fname'] }}<h1>
   {% endif %}
-  <div class = "search-result"> 
-    <div class="search-results-top">
-      <h2 class= "header"> You searched for {{session['search']}}</h2>
-      <span id="search-results-total-results" class="search-results-total-results" aria-live="assertive" aria-atomic="true">
-      
-      </span>
-    </div>
-   
-    {% for recipe in filtered_recipe %}
 
-    <div class="center">
-      <div class="home2">
-        <div class="home2_first">
-          <div class = "inner-container">
-            <img src = {{recipe.image}} width = 272 height = 272 title = "{{recipe.title}}">
-          </div>  
-          <br>
-        </div>
-      </div>
-      
-      
-      <div class="home2">
-        <div class="home2_second">
-          <a href = "/recipe/details?id={{ recipe['id'] }}" title = "{{recipe.title}}">
-            <P>{{recipe.title}}</P>  
-          </a>
-        </div>
-      </div>
-    </div>
-    &nbsp;
-
-<!-- 
-    <div class= "recipe_card" role = "listitem">
-      <div class = "img_container">
-        <a class = "card_imglink" href = "https://www.lifeloveandsugar.com/fluffy-homemade-pancakes-recipe/" title = "{{recipe.title}}" aria-hidden = "true" tabindex = "-1"> 
-          <div class = "inner-container">
-            <img src = {{recipe.image}} width = 272 height = 272 title = "{{recipe.title}}">
-          
-          </a>
-          <a class = "card-titlelink" href = "/recipe/details?id={{ recipe['id'] }}" title = "{{recipe.title}}">
-            <h3>{{recipe.title}}</h3>  
-          </a>
-        </div>
-      </div> -->
-
-      <!-- <div class="details-container">
-        <div class="details-conatainer-left">
-          <a class = "card-titlelink" href = "/recipe/details?id={{ recipe['id'] }}" title = "{{recipe.title}}">
-            <h3>{{recipe.title}}</h3>  
-          </a>
-          <br> -->
-          <!-- <div class = "rating"> </div>
-          <div class = "card-summary"> 
-            {{recipe.title}}
-          </div> -->
-
-        </div>
-      </div>
-    </div>
-   {% endfor %} 
-  </div>
-    {% endblock %}
+  {% for i in range(0, n - 1, 3) %}
+  
+   <div class="row">
+	 <div class="col-sm-4">
+	   <div class="card" style="width: 18rem;">
+		<img class="card-img-top" src="{{filtered_recipe[i].image}}" alt="../static/img/generic_recipe.png">
+		 <div class="card-body">	
+			<h5 class="card-title">
+			  <a href = "/recipe/details?id={{ filtered_recipe[i].id }}" title = "{{ filtered_recipe[i].title }}">
+			  <p>{{ filtered_recipe[i].title }}</p></a></h5>
+		 </div>
+	   </div>
+	 </div>
+	 <div class="col-sm-4">
+	   <div class="card" style="width: 18rem;">
+		<img class="card-img-top" src="{{filtered_recipe[i+1].image}}" alt="../static/img/generic_recipe.png">
+		 <div class="card-body">
+			<h5 class="card-title">
+			<a href = "/recipe/details?id={{ filtered_recipe[i+1].id }}" title = "{{ filtered_recipe[i+1].title }}">
+				<p>{{ filtered_recipe[i+1].title }}</p></a></h5>
+		 </div>
+	   </div>
+	 </div>
+	 <div class="col-sm-4">
+		<div class="card" style="width: 18rem;">
+			<img class="card-img-top" src="{{filtered_recipe[i+2].image}}" alt="../static/img/generic_recipe.png">
+		  <div class="card-body">
+			<h5 class="card-title">
+			 <a href = "/recipe/details?id={{ filtered_recipe[i+2].id }}" title = "{{ filtered_recipe[i+2].title }}">
+				<p>{{ filtered_recipe[i+2].title }}</p></a></h5>
+			 
+		  </div>
+		</div>
+	  </div>
+   </div>
+ 
+ 
+		{% endfor %}
+		
+	
+</div>
+{% endblock %}

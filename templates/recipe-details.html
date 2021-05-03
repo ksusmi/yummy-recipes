@@ -2,98 +2,153 @@
 {% block title %} {{recipe['title']}} {% endblock %}
 
 {% block content %}
+<div class="text-center">
+  {% if 'user_id' in session %}
+  <h1>Welcome, {{ session['fname'] }}<h1>
+      {% endif %}
 
-{% if session['fname'] %}
-<h1>Welcome, {{ session['fname'] }}<h1>
-  {% endif %} 
 
-<div style="max-width: 70%; margin: auto; padding-top:3%">
-  <div class="media">
-      <img src="{{recipe['image']}}" class="mr-3" alt="..." width="30%" height="30%">
-    
-      <!-- adding form to get the details from recipedetail pg and pass to the server-->
-      <form action="/add-to-favorite" method="POST">
-        <input type = "hidden" name = "recipe-id" value = "{{ recipe ['id']}}"> 
-        <input type = "hidden" name = "recipe-title" value = "{{ recipe['title'] }}">
-        <input type = "hidden" name = "recipe-instructions" value = "{{ recipe['instructions'] }}">
-
-        {% if show_fav_link: %}
-        <textarea id="review" placeholder= "Write your review" name = "review-notes" minlength="10" maxlength="150"></textarea>
-         <div> 
-        <button type="submit" name="addtofavorite" class="btn-link">Add To Fav</button>
-        {% else: %}
-        You added this recipe to favorites
-        {% endif %}
-
-       {# {% for flash in get_flashed_messages() %}
-                    {{ flash }}
-        {% endfor %} #}
+      <div class="row p-5 mx-auto " style="width:1000px">
+        <div class="col-md-8">
+          <img alt="Bootstrap Image Preview" src="{{recipe['image']}}" />
         </div>
+        <div class="col-md-4">
+          <h3>
+            {{ recipe['title'] }}
+          </h3>
+          <form action="/add-to-favorite" method="POST">
+            <input type="hidden" name="recipe-id" value="{{ recipe ['id']}}">
+            <input type="hidden" name="recipe-title" value="{{ recipe['title'] }}">
+            <input type="hidden" name="recipe-instructions" value="{{ recipe['instructions'] }}">
 
-        </form>
-      
-      <div class="media-body">
-        <h5 class="mt-0">{{recipe['title']}}</h5>
-       {% if recipe['instructions'] %}
-          {{recipe['instructions']}}
-        {% else %}
-          {{recipe['summary']}}
-        {% endif %}
+            {% if show_fav_link: %}
+            <textarea id="review" placeholder="Write your review" name="review-notes" class="form-control"></textarea>
+            <div>
+              <button type="submit" name="addtofavorite" class="btn btn-success">Add To Fav</button>
+              {% else: %}
+              <h5>
+                <a href = "/my-fav">
+                <p class="font-weight-normal font-size-10 text-primary">In favorites! </p></a>
+              </h5>
 
+              <br>
+              <h4>
+                Review Notes:
+              </h4>
+              <h5>
+                <p>{{recipe.get('review_notes', default)}}</p>
+              </h5>
+              <p><a class="btn" href="#">View details »</a></p>
+              {% endif %}
+
+            </div>
+
+          </form>
+        </div>
       </div>
-  </div><br>
-  
-  <section class="nutrition-section container">
-    <h2 class="section-headline">
-      <a id="nutrition"></a>
-      <span class="section-icon " aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" role="img" aria-hidden="true">
-          <path d="M4 11.116S3.954 9.6 5.282 9.6h2.241c1.325 0 1.277 1.516 1.277 1.516V20H4v-8.884zm5.6-5.632S9.554 4 10.881 4h2.242C14.446 4 14.4 5.484 14.4 5.484V20H9.6V5.484zm5.6 9.531s-.043-1.415 1.277-1.415h2.242c1.324 0 1.28 1.415 1.28 1.415V20H15.2v-4.985z"></path></svg>
-      </span>
-      Nutrition Facts 
-    </h2>
-    <div class="partial recipe-nutrition-section">
-      <div class="section-label">Per Serving:</div>
-      <div class="section-body">
-        Calories: {{recipe['calories']}} 
-        Carbohydrates: {{recipe['carbs']}} 
-        Fat: {{recipe['fat']}} 
-        Protein: {{recipe['protein']}} 
-        Cuisines: {{recipe['cuisines']}}
-        dishType: {{recipe['dishTypes']}}
-        diets: {{recipe['diets']}}
-        Vegan: {{recipe['vegan']}}
-        Vegetarian: {{recipe['vegetarian']}}
-        GlutenFree: {{recipe['glutenFree']}}
-        DairyFree: {{recipe['dairyFree']}}
-        VeryHealthy: {{recipe['veryHealthy']}}
-        Price-Per-Serving: {{recipe['pricePerServing']}}
-        Ready-In-Minutes: {{recipe['readyInMinutes']}} 
-
-       {# Calories: {{res[0].calories}} 
-        Carbohydrates: {{res[0].carbs}} 
-        Fat: {{res[0].fat}} 
-        Protein: {{res[0].protein}} 
-        Cuisines: {{cuisines}}
-        dishType: {{dishType}}
-        diets: {{diets}}
-        Vegan: {{res[0].vegan}}
-        Vegetarian: {{res[0].vegetarian}}
-        GlutenFree: {{res[0].glutenFree}}
-        DairyFree: {{res[0].dairyFree}}
-        VeryHealthy: {{res[0].veryHealthy}}
-        Price-Per-Serving: {{res[0].pricePerServing}}
-        Ready-In-Minutes: {{res[0].readyInMinutes}} #}
-
-      </div>
-      
-    </div>
-  </section>
-
-  <div class = ""> <div> 
-    <h3> prep time</h3>
-  </div></div>
-  {{recipe['inregdientsWidget'] | safe }}<br>
-  {{recipe['equipmentWidget'] | safe}}  
 </div>
+
+<div class="row p-5 mx-auto " style="width:1000px">
+  <div class="col-md-8">
+    <h3>
+      Instructions / Directions :
+    </h3>
+
+    <ul>
+      {% for line in recipe['instructions'] %}
+      <h3 style="font-size: 80%;">
+        <li class="list-item">
+          {{line}}
+        </li>
+        {% endfor %}
+      </h3>
+
+    </ul>
+
+
+    <p>
+      <a class="btn btn-primary" href="#">View details »</a>
+    </p>
+  </div>
+</div>
+<p ><h3 > Ingredients:</h3></p>
+
+<div class="row p-5 mx-auto " style="width:1200px">
+      {% for ing in ings %}
+      <div class="card text-center">
+        <img class="card-img-top rounded-circle" style="width: 150px;height:150px" src="{{ing['image']}}"
+          alt="Card image cap">
+        <div class="card-body">
+          <p class="card-text">
+          <h6 class="text-muted" style="font-size: 60%; font-weight:600;">{{ing['name']}}</h6></p>
+          <p class="card-text">
+            <h6 class="text-muted" style="font-size: 60%; font-weight:600;">{{ing['amount']}}</h6></p>
+        </div>
+      </div>
+      {% endfor %}
+
+</div>
+
+
+
+
+  <div class="row p-5 mx-auto " style="width:1000px">
+    <div class="col-md-6 cnter">
+      <table class="table table-sm">
+        <thead>
+          <span class="badge badge-default font-weight-bold text-danger">
+            <h2>Limit These </h2>
+          </span>
+        </thead>
+        <tbody>
+          {% for bad_nutri in recipe['bad_nutri'] %}
+          <tr>
+            {% if bad_nutri['indented'] %}
+            <td>&nbsp;&nbsp;{{bad_nutri['title']}}</td>
+            {% else %}
+            <td>{{bad_nutri['title']}}</td>
+            {% endif %}
+            <td>{{bad_nutri['amount']}}</td>
+            <td>
+              <div class= "p-3 mb-2 bg-danger text-white">{{bad_nutri['percentOfDailyNeeds']}} </div></td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <div class="row p-5 mx-auto " style="width:1000px">
+    <div class="col-md-6 cnter">
+      <table class="table table-sm">
+        <thead>
+          <span class="badge badge-default font-weight-bold text-success">
+            <h2>Get Enough Of These </h2>
+          </span>
+        </thead>
+        <tbody>
+          {% for good_nutri in recipe['good_nutri'] %}
+          <tr>
+            {% if good_nutri['indented'] %}
+            <td>&nbsp;&nbsp;{{good_nutri['title']}}</td>
+            {% else %}
+            <td>{{good_nutri['title']}}</td>
+            {% endif %}
+            <td>{{good_nutri['amount']}}</td>
+            <td>
+              <div class="p-3 mb-2 bg-success text-white">{{good_nutri['percentOfDailyNeeds']}}</div>
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+
+
 {% endblock %}

@@ -69,3 +69,43 @@ def get_recipe_complex_search(**filters):
 
     return recipe_info
 
+def get_equipment_list_by_recipe_id(recipeid):
+    recipe_info_endpoint = "/recipes/{0}/equipmentWidget.json".format(recipeid)
+    response = requests.request("GET", url+recipe_info_endpoint, headers=headers)
+    return response.json()
+
+def get_random_food_joke():
+    recipe_info_endpoint = "/food/jokes/random"
+    response = requests.request("GET", url + recipe_info_endpoint, headers=headers)
+    return response.json()
+
+def get_random_food_trivia():
+    recipe_info_endpoint = "/food/trivia/random"
+    response = requests.request("GET", url + recipe_info_endpoint, headers=headers)
+    return response.json()
+
+def get_ingredients_list_of_recipe(recipeid):
+    
+    recipe_info_endpoint = "/recipes/{0}/ingredientWidget.json".format(recipeid)
+    response = requests.request("GET", url+ recipe_info_endpoint, headers=headers)
+    return response.json()
+
+def get_random_recipe():
+    recipe_info_endpoint = "/recipes/random"
+    querystring = {"number":"1","tags":"vegetarian,dessert"}
+    response = requests.request("GET", url+recipe_info_endpoint, headers=headers, params=querystring)
+    return response.json()
+
+def  get_visualize_recipe_ingredient(recipeid):
+    recipe_info_endpoint = "/recipes/1003464/ingredientWidget"
+    response = requests.request("GET", url+recipe_info_endpoint, headers=headers)
+    return response.json()
+
+def get_visualize_recipe_nutrition_widget(recipeid):
+    recipe_info_endpoint = "/recipes/{0}/nutritionWidget".format(recipeid)
+    headers["accept"]: "text/html" 
+    response = requests.request("GET", url+recipe_info_endpoint, headers=headers)
+    del headers["accept"]
+    return response.json()
+
+

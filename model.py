@@ -2,12 +2,10 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-#from server import app
+
 
 db = SQLAlchemy()
 
-
-# Replace this with your code!
 class User(db.Model):
     """A user."""
 
@@ -17,9 +15,7 @@ class User(db.Model):
     fname = db.Column(db.String, nullable = False,)
     lname = db.Column(db.String, nullable = False,)
     email = db.Column(db.String, unique=True, nullable = False,)
-    # password should have to be mixed characters? and display as * type = password in html
     password = db.Column(db.String, nullable = False, )
-    #
     mobile_no = db.Column(db.String, nullable = True,)
 
     def __repr__(self):
@@ -27,7 +23,7 @@ class User(db.Model):
 
 
 class DishType(db.Model):
-    """A dist type."""
+    """A dish type."""
 
     __tablename__ = 'dishtypes'
 
@@ -87,8 +83,6 @@ class RecipeIngredient(db.Model):
     ingredient_id =db.Column(db.Integer, db.ForeignKey('ingredients.ingredient_id'))
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'))
     quantity = db.Column(db.String, nullable = False,)
-    
-    # refer sqlAlchemy ????? Data moseling lecture ex : book genres
     ingredient = db.relationship('Ingredient', backref='recipeingredients')
     recipe = db.relationship('Recipe', backref='recipeingredients')
 
@@ -130,7 +124,6 @@ class Rating(db.Model):
     __tablename__ = 'ratings'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    #recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'))
     recipe_id =  db.Column(db.Integer, nullable = False)
     title_ext = db.Column(db.String)
     description_ext = db.Column(db.Text)
@@ -140,7 +133,6 @@ class Rating(db.Model):
     favorite = db.Column(db.Boolean, default= False,)
     external = db.Column(db.Boolean, default = False,)
     
-    #recipe =db.relationship('Recipe', backref='ratings')
     user = db.relationship('User', backref='ratings')
 
 

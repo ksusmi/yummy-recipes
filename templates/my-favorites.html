@@ -3,33 +3,52 @@
 {% block title %} My Favorites {% endblock %}
 {% block content %}
 
-<!--<div class="recipe-info-section">-->
-    <div class="center">
-      <div class="home2">
-          <h1> My favorite recipes</h1>
-        {% for favorite in fav_list %}
-        <div class="home2_first">
-          <a class = "card-titlelink" href = "/recipe/details?id={{ favorite['recipe_id'] }}" title = "{{favorite.title}}">
-          <p>{{favorite.title}}</p> </a>
-          <p>{{favorite.description}}</p>
-        </div>
-        <BR>
-        {% endfor %}
-      </div>
   
-      <div class="home2">
-          <h1> My Own Recipes</h1>
-        {% for my_recipe in my_recipe_list%}
-        <div class="home2_second">
-          <p>{{my_recipe.title}}</p>
-          <p>{{my_recipe.description}}</p>
-          <p>{{my_recipe.instructions}}</p>
-
+    <div class="row p-4 mx-auto" style= "width:1200px">
+      <div class="col-md-6">
+        <h3 class="text-info text-left">
+          My favorite recipes
+        </h3>
+        {% for favorite in fav_list %}
+        <div class="card">
+          <h5 class="card-header">
+            {{favorite.title}}
+          </h5>
+          <div class="card-body">
+            <p class="card-text">
+              <a  href = "/recipe/details?id={{ favorite['recipe_id'] }}" title = "{{favorite.title}}"></a>
+            
+            </p>
+          </div>
+          <div class="card-footer">
+            {{favorite.description}}
+          </div>
         </div>
-        <BR>
         {% endfor %}
       </div>
+      <div class="col-md-6">
+        <h3 class="text-info text-left">
+          My Own Recipes.
+        </h3>
+        {% for my_recipe in my_recipe_list%}
+        <div class="card">
+          <h5 class="card-header">
+            {{my_recipe.title}}
+          </h5>
+          <div class="card-body">
+            <p class="card-text">
+              <a  href = "/recipe/details?id={{ my_recipe['recipe_id'] }}" title = "{{my_recipe.title}}"></a>
+              {{my_recipe.title}}
+            </p>
+          </div>
+          <div class="card-footer">
+            {{my_recipe.instructions}}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+     
     </div>
-  <!--</div>-->
+  
 
 {% endblock %}

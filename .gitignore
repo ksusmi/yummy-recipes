@@ -3,12 +3,10 @@ __pycache__/
 secret.sh
 static/doc/
 test/
-templates/add-your-recipe copy.html
+
 test_crud.py
 static/js/app copy.js
 
 
-static/css/bootstrap/
-static/fonts/
-static/js/bootstrap/
+
 templates/base copy.html
