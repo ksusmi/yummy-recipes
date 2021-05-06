@@ -44,7 +44,11 @@ def search_result():
 
     recipe_list = res_db + res
     n = len(recipe_list)
-    return render_template('search-result.html', filtered_recipe=res_db + res, n=n)
+    if n > 0:
+        return render_template('search-result.html', filtered_recipe=res_db + res, n=n)
+    else:
+        flash("No Recepies Found for  %s" % s)
+        return redirect("/")    
 
 @app.route('/recipe/details')
 def get_recipe_details():
@@ -77,8 +81,22 @@ def get_recipe_details():
         recipe_details['carbs'] = recipe_nutritions['carbs']
         recipe_details['fat'] = recipe_nutritions['fat']
         recipe_details['protein'] = recipe_nutritions['protein']
-        recipe_details['bad_nutri'] = recipe_nutritions['bad']
-        recipe_details['good_nutri'] = recipe_nutritions['good']
+        recipe_details['bad_nutri'] = recipe_nutritions['bad'][:7]
+        recipe_details['good_nutri'] = recipe_nutritions['good'][:7]
+        recipe_details['cookingMinutes'] = recipe_details.get('cookingMinutes', None)
+        recipe_details['preparationMinutes'] = recipe_details.get('preparationMinutes', None)
+        
+        if not recipe_details['diets']:
+            recipe_details['diets'] = "None "
+         
+        else:
+            recipe_details['diets'] = recipe_details['diets'][0]
+       
+  
+        if len(recipe_details['cuisines']) <= 0:
+            recipe_details['cuisines'] = None
+        if len(recipe_details['dishTypes']) <= 0:
+            recipe_details['dishTypes'] = None
 
         rec_ing = rapidapi.get_ingredients_list_of_recipe(recipe_id)
         ingredients_list_image = []
@@ -95,11 +113,12 @@ def get_recipe_details():
     if recipe_details['instructions'] == "<p>Instructions</p>" or recipe_details['instructions'] == None:
         recipe_details['instructions'] = recipe_details['summary']
 
-    lines = recipe_details['instructions'].split(".")
-    
-    # pop the end blank line from list
-    lines.pop(-1)
-    recipe_details['instructions'] = lines
+    recipe_details['hidden_instructions'] = recipe_details['instructions']
+
+    # lines = recipe_details['instructions'].split(".")
+    # # pop the end blank line from list
+    # lines.pop(-1)
+    # recipe_details['instructions'] = lines
 
     show_fav_link = True
     if "user_id" in session:
@@ -134,6 +153,7 @@ def sign_in():
         flash("Logged in as %s" % user.fname)
         if 'redirect_recipe_id' in session:
             redirect_recipe_id = int(session['redirect_recipe_id'])
+            session['redirect_recipe_id'].clear()
             if isinstance(redirect_recipe_id, int):
                 return redirect(f'/recipe/details?id={redirect_recipe_id}')
         else:
@@ -193,7 +213,8 @@ def favorite():
             fav_dict["recipe_id"] = rating.recipe_id
             if rating.external:
                 fav_dict["title"] = rating.title_ext
-                fav_dict["description"] = rating.description_ext
+                # to get the first 250 characters
+                fav_dict["description"] = rating.description_ext[:250]
 
             else:
                 recipes = Recipe.query.filter(
@@ -208,18 +229,21 @@ def favorite():
         my_recipe_list = []
         for recipe in recipes:
             rec_dict = {}
-            rec_dict["recipe_id"] = recipe.recipe_id
+            rec_dict["recipe_id"] = f"YR-{recipe.recipe_id}"
             rec_dict["title"] = recipe.title
             rec_dict["description"] = recipe.description
             rec_dict["instructions"] = recipe.instructions
             my_recipe_list.append(rec_dict)
 
-    return render_template('my-favorites.html', fav_list=fav_list, my_recipe_list=my_recipe_list)
-
+        return render_template('my-favorites.html', fav_list=fav_list, my_recipe_list=my_recipe_list)
+    else:
+        flash("Login to see your favorites")
+        return redirect("/login")
 
 @app.route('/add-your-recipe')
 def add_your_recipe():
     """ user can create his own recipe """
+
     if 'user_id' in session:
         user_id = session.get('user_id')
         diet_picklist = get_diet()
@@ -236,6 +260,7 @@ def add_your_recipe():
 @app.route('/submit-your-recipe', methods=["POST"])
 def submit_your_recipe():
     """ submit the created recipe """
+    
     if 'user_id' in session:
         
         user_id = session.get('user_id')
@@ -284,8 +309,10 @@ def submit_your_recipe():
             # new recipe ingredient rows from html[['1', '3', '3', 'papaya'], ['2', '3', '3'], ['1', '3', '3', 'test ingredient']]
             # ['1', '3', '3', 'papaya']
             # ingredient_list[0] = ingredient_id, ingredient_list[1] = unit,ingredient_list[2] = quantity, if other ingredient_list[3] = name,
-            ingredient_list = ingredient_row.split(',')
-            ingredients.append(ingredient_list)
+            print("######################### ingrow", ingredient_row)
+            if ingredient_row: 
+                ingredient_list = ingredient_row.split(',')
+                ingredients.append(ingredient_list)
             i += 1
 
         new_recipe = create_recipe(recipe_title, recipe_description, prep_time,

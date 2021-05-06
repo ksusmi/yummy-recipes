@@ -126,6 +126,8 @@ def get_recipes_by_recipe_id(recipe_id):
     recipe_details["pricePerServing"] = None
     recipe_details["readyInMinutes"] = None
     recipe_details["dairyFree"] = None
+    recipe_details['cookingMinutes'] = recipe_db[0].cook_time
+    recipe_details['preparationMinutes'] = recipe_db[0].prep_time
     return recipe_details
 
 def get_recipe_by_desc(user_id):
@@ -157,7 +159,8 @@ def get_cuisine():
     return cuisine_list_to_dict(Cuisine.query.all())
 
 def get_ingredients():
-    return ingredient_list_to_dict(Ingredient.query.all())
+    return ingredient_list_to_dict(Ingredient.query.order_by(Ingredient.ingredient).all())
+    
 
 def get_unit():
     return unit_list_to_dict(Ingredient.query.all())

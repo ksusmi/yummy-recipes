@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% block title %} Add Your Own Recipe {% endblock %}
+{%block head%} 
+<link
+      href="/static/css/add_recipe.css"
+      rel="stylesheet"
+    >
+	{% endblock %}
+
 {% block content %}
 
 <div class="row p-5 mx-auto " style="width:1000px">
@@ -101,7 +108,7 @@
                         style="display:none;">
                 </div>
             </div>
-            <button type="button" class="btn btn-primary" onclick="addrowtotable()"> Add</button>
+            <button type="button" class="btn btn-success" onclick="addrowtotable()"> Add</button>
 
             &nbsp;
             &nbsp;
@@ -124,7 +131,7 @@
             </div>
 
 
-            <button type="submit" class="add-your-recipe-Button btn-primary">Create Recipe</button>
+            <button type="submit" class="add-your-recipe-Button btn-success">Create Recipe</button>
 
             <script>
                 function addingredient(val) {

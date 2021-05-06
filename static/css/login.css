@@ -1,0 +1,52 @@
+/* Login Page */
+
+nav {
+  position: absolute;
+  
+}
+
+.nav-transparent {
+  background: linear-gradient(rgba(120, 238, 10, 0.4), transparent);
+  font-size: 1.2em;
+  z-index: 100;
+}
+
+.nav-transparent .nav-link,
+.nav-transparent .navbar-brand, 
+.nav-transparent p {
+  color: rgb(59, 17, 247);
+} 
+
+.nav-transparent .navbar-brand {
+  font-weight: bold;
+}
+
+.nav-transparent .navbar-brand:hover,
+.nav-transparent .nav-link:hover {
+  color: #ff745c;
+}
+
+body{
+  background-image: url("/static/img/rec_ing.jpg");
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+      
+  background-color: #cccccc;  
+}
+
+.form-control, .btn{
+  border-radius: 25px;
+  border:3px solid #b1e956;
+  color:rgb(9, 117, 9)
+  
+}
+.form-group{
+  
+  font-family: sans-serif;
+  color:darkcyan;
+  font-weight: normal;
+   
+ }
+

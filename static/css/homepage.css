@@ -1,54 +1,59 @@
 /* Yummy Recipe Homepage */
-
-/* The body has an iamge that spans the entire size of the page.
-   Everything is centered and in white. */
-
-
-.search-field {
-    font-family: "Source Sans Pro","Times New Roman",serif;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 400;
-    letter-spacing: 0;
-    color: rgba(0,0,0,0.95);
-    border: none;
-    padding-left: 24px;
-    width: 100%;
-
-}
+  
+  .nav-transparent {
+    background: linear-gradient(rgba(140, 207, 131, 0.952), transparent);
+    font-size: 1.3em;
+    z-index: 100;
+  }
+  
+  
+  .nav-transparent .navbar-brand {
+    font-weight: bold;
+  }
+  
+  .nav-transparent .navbar-brand:hover,
+  .nav-transparent .nav-link:hover {
+    color: #ff745c;
+  }
 
 .searchBlock_form .searchButton {
     background: #d54215;
     padding: 14px;
-}
-body {
-    background-image: url("/static/img/paper.gif");
-    background-color: #cccccc;
-    /* background: #333 url("/static/img/homepage-background.jpg");
-    background-size: cover;
-
-    color: white;*/
-    text-align: center;
-}
-
-/* site-wrapper and site-wrapper-inner are to vertically center content using
-   table/table-cell vertical centering. */
-
-.site-wrapper {
-    display: table;
-    width: 100%;
-    height: 100%;
-}
-
-.site-wrapper-inner {
-    display: table-cell;
-    vertical-align: middle;
-}
+} 
 
 /* The footer always appears at the bottom of the browser window. */
 
 footer {
     position: fixed;
     bottom: 0;
-    width: 100%;  /* required because fixed position */
+    width: 100%;  
+}
+html, body {
+  
+    background-image: url("/static/img/rec_ing.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;  
+    background-color: #cccccc; 
+}
+ .carousel-inner{
+  margin-top: 25px;
+  border: 3px solid rgb(218, 241, 13)
+} 
+
+.form-control, .btn{
+  border-radius: 15px;
+  border:3px solid #b1e956;
+  box-sizing: content-box;
+  
+}
+
+.flash-msg{
+  color:darkorchid;
+  font-weight: bold;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.carousel-caption, .trivia{
+  color:rgb(243, 66, 34)
 }

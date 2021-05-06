@@ -1,0 +1,88 @@
+/* Recipe Detail page */
+  
+.nav-transparent {
+  background: linear-gradient(rgba(170, 223, 24, 0.952), transparent);
+  font-size: 1.2em;
+  z-index: 100;
+}
+
+
+.nav-transparent .navbar-brand {
+  font-weight: bold;
+}
+
+.nav-transparent .navbar-brand:hover,
+.nav-transparent .nav-link:hover {
+  color: #ff745c;
+}
+
+ body {
+  background-image: url("/static/img/paper.gif");
+  background-color: #cccccc;
+
+  text-align: center;
+} 
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;  /* required because fixed position */
+}
+.carousel-inner{
+margin-top: 25px;
+
+border: 1px solid rgb(218, 241, 13)
+} 
+
+ html, body {
+/* background-image: url('/static/img/pink-smoke.png') !important; */
+ background-color:  #f1f0d8;
+ background-repeat: no-repeat;
+ background-position: center ;
+ background-size: 100%;
+
+} 
+
+.btn{
+  border-radius:25px;
+  border:1px solid #b1e956;
+  color:rgb(9, 117, 9)
+}
+.form-control, .badge, .bad-nutri{
+  border-radius:25px;
+  border:1px solid #b1e956;
+}
+h4{
+  font-weight: bold;
+  font-style: italic;
+  color: blueviolet;
+}
+
+h3{
+  font-weight: bold;
+  font-style:cursive;
+  color: rgb(226, 101, 43);
+}
+
+.badge{
+  font-weight: bold;
+  font-style:cursive;
+  color: rgb(226, 64, 43);
+}
+
+ .ins-clas, .ing
+{
+  image:circle;
+  border-radius:25px;
+  border:2px solid #b1e956;
+}
+.search-img{
+  border-radius:50%;
+ 
+   
+}
+
+.nutri{
+  border:2px solid;
+  border-top:2px solid
+}

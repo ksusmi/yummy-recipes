@@ -1,48 +1,60 @@
 {% extends 'base.html' %}
 
 {% block title %} My Favorites {% endblock %}
+{%block head%} 
+<link
+      href="/static/css/favorite.css"
+      rel="stylesheet"
+    >
+	{% endblock %}
+
 {% block content %}
 
   
-    <div class="row p-4 mx-auto" style= "width:1200px">
-      <div class="col-md-6">
-        <h3 class="text-info text-left">
+    <div class="favorites row p-4 mx-auto" style= "width:1200px">
+      <div class="fav-col col-md-6">
+        <h3 class="fav-col-head text-info text-left">
           My favorite recipes
         </h3>
         {% for favorite in fav_list %}
         <div class="card">
           <h5 class="card-header">
+            <a  href = "/recipe/details?id={{ favorite['recipe_id'] }}" title = "{{favorite.title}}">
             {{favorite.title}}
+          </a>
           </h5>
-          <div class="card-body">
+          <div class="card-body ">
             <p class="card-text">
-              <a  href = "/recipe/details?id={{ favorite['recipe_id'] }}" title = "{{favorite.title}}"></a>
+              {{favorite.description}}
+              <a  href = "/recipe/details?id={{ favorite['recipe_id'] }}" title = "{{favorite.title}}">
+                 ... See more </a>
             
             </p>
           </div>
           <div class="card-footer">
-            {{favorite.description}}
+            
           </div>
         </div>
         {% endfor %}
       </div>
-      <div class="col-md-6">
-        <h3 class="text-info text-left">
+      <div class="fav-col col-md-6">
+        <h3 class="fav-col-head text-info text-left">
           My Own Recipes.
         </h3>
         {% for my_recipe in my_recipe_list%}
         <div class="card">
           <h5 class="card-header">
-            {{my_recipe.title}}
+            <a  href = "/recipe/details?id={{ my_recipe['recipe_id'] }}" title = "{{my_recipe.title}}">
+              {{my_recipe.title}}</a>
+
           </h5>
           <div class="card-body">
             <p class="card-text">
-              <a  href = "/recipe/details?id={{ my_recipe['recipe_id'] }}" title = "{{my_recipe.title}}"></a>
-              {{my_recipe.title}}
+              {{my_recipe.description}}
             </p>
           </div>
           <div class="card-footer">
-            {{my_recipe.instructions}}
+           {# {{my_recipe.instructions}} #}
           </div>
         </div>
         {% endfor %}

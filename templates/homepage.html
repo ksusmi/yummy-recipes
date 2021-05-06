@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
-{% block title %} Recipes searcher {% endblock %}
+{% block title %} Yummy Recipe {% endblock %}
+{%block head%} 
+<link
+      href="/static/css/homepage.css"
+      rel="stylesheet"
+    >
+	{% endblock %}
 {% block content %}
 
-<div class="row bg-light p-5 mx-auto " style="width:1000px">
+<div class=" carousel row bg-touch p-5 mx-auto " style="width:1000px">
 	<div class="col">
 		<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
 			<div class="carousel-inner">
@@ -18,9 +24,10 @@
 					</div>
 				</div>
 
-				<div class="carousel-item">
-					<div class="d-flex align-content-center flex-wrap" style="width: 1200px; height: 350px;">
-						<h3 class="px-5">This is FOOD fact 2. {{trivia['text']}}</h3>
+				<div class="carousel-item ">
+					<div class="d-flex justify-content-center flex-column" style=" height: 350px;">
+						<center><p><h3 class="trivia px-5">Food Trivia.</h3></p>
+						<p><h4>{{trivia['text']}}</h4></p></center>
 					</div>
 				</div>
 				<div class="carousel-item">

@@ -1,25 +1,36 @@
 {% extends 'base.html' %}
 {% block title %} Search Result {% endblock %}
+
+{%block head%} 
+<link
+      href="/static/css/search_result.css"
+      rel="stylesheet"
+    >
+	{% endblock %}
+
 {% block content %}
   
 {% if 'user_id' in session %}
-<h1>Welcome, {{ session['fname'] }}<h1>
+<h4 class="search-header" > Welcome, {{ session['fname'] }}<h4>
   {% endif %}
 
   {% for i in range(0, n - 1, 3) %}
   
-   <div class="row">
+   <div class="search-result row p-5 mx-auto">
 	 <div class="col-sm-4">
+		{% if i < n %}
 	   <div class="card" style="width: 18rem;">
-		<img class="card-img-top" src="{{filtered_recipe[i].image}}" alt="../static/img/generic_recipe.png">
+		<img class="card-img-top " src="{{filtered_recipe[i].image}}" alt="../static/img/generic_recipe.png">
 		 <div class="card-body">	
 			<h5 class="card-title">
 			  <a href = "/recipe/details?id={{ filtered_recipe[i].id }}" title = "{{ filtered_recipe[i].title }}">
 			  <p>{{ filtered_recipe[i].title }}</p></a></h5>
 		 </div>
 	   </div>
+	   {% endif %}
 	 </div>
 	 <div class="col-sm-4">
+		{% if (i+1) < n %}
 	   <div class="card" style="width: 18rem;">
 		<img class="card-img-top" src="{{filtered_recipe[i+1].image}}" alt="../static/img/generic_recipe.png">
 		 <div class="card-body">
@@ -28,8 +39,10 @@
 				<p>{{ filtered_recipe[i+1].title }}</p></a></h5>
 		 </div>
 	   </div>
+	   {%endif%}
 	 </div>
 	 <div class="col-sm-4">
+		{% if (i+2) < n %}
 		<div class="card" style="width: 18rem;">
 			<img class="card-img-top" src="{{filtered_recipe[i+2].image}}" alt="../static/img/generic_recipe.png">
 		  <div class="card-body">
@@ -39,6 +52,7 @@
 			 
 		  </div>
 		</div>
+		{% endif %}
 	  </div>
    </div>
  

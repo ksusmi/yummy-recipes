@@ -46,7 +46,7 @@ def get_recipe_details_by_id(recipeid):
 def get_recipe_by_ingredients(ingredients):
 
     recipe_info_endpoint = "recipes/findByIngredients"
-    querystring = {"ingredients":ingredients,"number":"5","ranking":"1","ignorePantry":"true"}
+    querystring = {"ingredients":ingredients,"number":"21","ranking":"1","ignorePantry":"true"}
     recipe_info = requests.request("GET", url + recipe_info_endpoint, headers=headers, params=querystring).json()
 
     return recipe_info
@@ -108,4 +108,9 @@ def get_visualize_recipe_nutrition_widget(recipeid):
     del headers["accept"]
     return response.json()
 
+def analyze_search_query(query):
+    recipe_info_endpoint = "/recipes/queries/analyze"
+    querystring = {"q":query}
+    response = requests.request("GET", url+recipe_info_endpoint, headers=headers, params=querystring)
+    return response.json()
 

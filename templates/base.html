@@ -5,73 +5,74 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="/static/mystyles.css">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- <style>
-    body  {
-      background-image: url("/static/img/ingredients-homemade-pizza_35641-2533.jpg");
-      
-      background-color: #cccccc;
-      
-    } 
-    </style> -->
 
-    
-        
-        
+    <link href="../static/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <link href="/static/css/base.css" rel="stylesheet">
+
+    {%block head%} {% endblock %}
+
+    {% block styles %}
+
+    {% endblock %}
 </head>
+
 
 <body>
 
     <div class="container center">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="/">Yummy Recipe</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <div class="base">
+            <nav class="navbar navbar-expand-md nav-transparent w-100">
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <!-- <li class="nav-item active">
-                        <a class="nav-link" href="/">Yummy Recipes <span class="sr-only">(current)</span></a>
-                    </li> -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/my-fav">My Favorite</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/add-your-recipe">Add Your Recipe</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Profile
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {% if 'user_id' in session %}
-                            <a class="dropdown-item disabled" href="/login">Login</a>
+                <a class="navbar-brand" href="/">Yummy Recipe</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                            {% else%}
-                            <a class="dropdown-item " href="/login">Login</a>
-                            {% endif %}
-                            <a class="dropdown-item" href="/logout">Logout</a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/my-fav">My Favorite</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/add-your-recipe">Add Your Recipe</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Profile
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                {% if 'user_id' in session %}
+                                <a class="dropdown-item disabled" href="/login">Login</a>
 
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/signup">Register</a>
-                        </div>
-                    </li>
-                </ul>
-                <form class="form-inline my-2 my-lg-0" action="/search">
-                    <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search"
-                        aria-label="Search" required>
-                    <input class="btn btn-outline-success my-2 my-sm-0" type="submit">
-                </form>
-            </div>
-        </nav>
+                                {% else%}
+                                <a class="dropdown-item " href="/login">Login</a>
+                                {% endif %}
+                                <a class="dropdown-item" href="/logout">Logout</a>
+
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/signup">Register</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0" action="/search">
+                        <input class="form-control my-sm-2" type="text" name="search"
+                            placeholder="Search separated by comma" aria-label="Search" required>
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit"> Search</button>
+
+                    </form>
+                </div>
+            </nav>
+        </div>
 
     </div>
-    <div class="text-center">
+    <div class="flash-msg text-center">
         {% with messages = get_flashed_messages() %}
         {% for message in messages %}
         {{ message }}
@@ -82,8 +83,6 @@
     {% block content %} CONTENT HERE {% endblock %}
 
 
-    <script src="/static/js/ingWidget.js"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
@@ -93,7 +92,8 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 
-
+    {% block scripts %}
+    {% endblock %}
 
 </body>
 

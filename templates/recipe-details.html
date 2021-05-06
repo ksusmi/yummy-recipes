@@ -1,25 +1,30 @@
 {% extends 'base.html' %}
 {% block title %} {{recipe['title']}} {% endblock %}
 
+{%block head%}
+<link href="/static/css/recipe_detail.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="text-center">
   {% if 'user_id' in session %}
-  <h1>Welcome, {{ session['fname'] }}<h1>
+  <h3>Welcome, {{ session['fname'] }}<h3>
       {% endif %}
 
+      <div class="search"></div>
+      <div class="row p-5 mx-auto ">
+        <div class=" col-md-6">
 
-      <div class="row p-5 mx-auto " style="width:1000px">
-        <div class="col-md-8">
-          <img alt="Bootstrap Image Preview" src="{{recipe['image']}}" />
+          <img class="search-img " alt="Bootstrap Image Preview" src="{{recipe['image']}}" />
         </div>
         <div class="col-md-4">
-          <h3>
+          <h4>
             {{ recipe['title'] }}
-          </h3>
+          </h4>
           <form action="/add-to-favorite" method="POST">
             <input type="hidden" name="recipe-id" value="{{ recipe ['id']}}">
             <input type="hidden" name="recipe-title" value="{{ recipe['title'] }}">
-            <input type="hidden" name="recipe-instructions" value="{{ recipe['instructions'] }}">
+            <input type="hidden" name="recipe-instructions" value="{{ recipe['hidden_instructions']}}">
 
             {% if show_fav_link: %}
             <textarea id="review" placeholder="Write your review" name="review-notes" class="form-control"></textarea>
@@ -27,128 +32,126 @@
               <button type="submit" name="addtofavorite" class="btn btn-success">Add To Fav</button>
               {% else: %}
               <h5>
-                <a href = "/my-fav">
-                <p class="font-weight-normal font-size-10 text-primary">In favorites! </p></a>
+                <a href="/my-fav">
+                  <p class="font-weight-normal font-size-10 text-primary">In favorites! </p>
+                </a>
               </h5>
-
-              <br>
-              <h4>
-                Review Notes:
-              </h4>
+              <h5>Review Notes</h5>
               <h5>
                 <p>{{recipe.get('review_notes', default)}}</p>
               </h5>
-              <p><a class="btn" href="#">View details »</a></p>
+              <!-- <p><a class="btn" href="#">View details »</a></p> -->
               {% endif %}
 
             </div>
+            <br>
+            <div>
+              <!-- <button type="text" class="btn btn-outline-primary">Cusinie</button> -->
+
+              <h6>
+                <p> Cuisines: {{recipe['cuisines']}}</p>
+                {#<p> DishType: {{recipe['dishTypes'][0]}}</p> #}
+                <p>Diets: {{recipe['diets']}}</p>
+                <p> Cook Time: {{recipe['cookingMinutes']}} </p>
+                <p> Prep Time: {{recipe['preparationMinutes']}}</p>
+
+              </h6>
+            </div>
 
           </form>
+
+
         </div>
       </div>
 </div>
 
-<div class="row p-5 mx-auto " style="width:1000px">
-  <div class="col-md-8">
-    <h3>
+<div class=" row pl-5 " style="width:1000px">
+  <div class="ins-clas col-md-12">
+    <h4>
       Instructions / Directions :
-    </h3>
+    </h4>
+    <p>{{recipe['instructions'] | safe}}</p>
+  </div>
+</div>
+<div class=" pl-5 " style="width:1000px">
+  <p>
+  <h4> Ingredients:</h4>
+  </p>
+</div>
+<div class=" ing row p-1 mx-auto " style="width:1200px">
+  {% for ing in ings %}
+  <div class="card text-center">
+    <img class="card-img-top rounded-circle" style="width: 100px;height:90px" src="{{ing['image']}}"
+      alt="Card image cap">
+    <div class="card-body p-0">
+      <p class="card-text">
+      <h6 class="text-muted" style="font-size: 60%; font-weight:600;">{{ing['name']}}</h6>
+      </p>
+      <p class="card-text">
+      <h6 class="text-muted" style="font-size: 60%; font-weight:600;">{{ing['amount']}}</h6>
+      </p>
+    </div>
+  </div>
+  {% endfor %}
 
-    <ul>
-      {% for line in recipe['instructions'] %}
-      <h3 style="font-size: 80%;">
-        <li class="list-item">
-          {{line}}
-        </li>
+</div>
+
+
+
+
+<div class="row p-3 " style="width:900px">
+  <div class="col-md-6 cnter">
+    <table class="table table-sm">
+      <thead>
+        <span class="badge badge-default font-weight-bold text-danger">
+          <h4>Limit These </h4>
+        </span>
+      </thead>
+      <tbody class="nutri">
+        {% for bad_nutri in recipe['bad_nutri'] %}
+        <tr>
+          {% if bad_nutri['indented'] %}
+          <td>&nbsp;&nbsp;{{bad_nutri['title']}}</td>
+          {% else %}
+          <td>{{bad_nutri['title']}}</td>
+          {% endif %}
+          <td>{{bad_nutri['amount']}}</td>
+          <td>
+            <div class=" mb-2 bg-danger text-white">{{bad_nutri['percentOfDailyNeeds']}}% </div>
+          </td>
+
+        </tr>
+
         {% endfor %}
-      </h3>
+      </tbody>
+    </table>
+  </div>
+  <!-- </div>
+  <div class="row p-3 mx-auto " style="width:1000px"> -->
+  <div class="col-md-6 cnter">
+    <table class="table table-sm">
+      <thead>
+        <span class="badge badge-default font-weight-bold text-success">
+          <h4>Get Enough Of These </h4>
+        </span>
+      </thead>
+      <tbody class="nutri">
+        {% for good_nutri in recipe['good_nutri'] %}
+        <tr>
+          {% if good_nutri['indented'] %}
+          <td>&nbsp;&nbsp;{{good_nutri['title']}}</td>
+          {% else %}
+          <td>{{good_nutri['title']}}</td>
+          {% endif %}
+          <td>{{good_nutri['amount']}}</td>
+          <td>
+            <div class=" mb-2 bg-success text-white">{{good_nutri['percentOfDailyNeeds']}}%</div>
+          </td>
 
-    </ul>
-
-
-    <p>
-      <a class="btn btn-primary" href="#">View details »</a>
-    </p>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
-<p ><h3 > Ingredients:</h3></p>
-
-<div class="row p-5 mx-auto " style="width:1200px">
-      {% for ing in ings %}
-      <div class="card text-center">
-        <img class="card-img-top rounded-circle" style="width: 150px;height:150px" src="{{ing['image']}}"
-          alt="Card image cap">
-        <div class="card-body">
-          <p class="card-text">
-          <h6 class="text-muted" style="font-size: 60%; font-weight:600;">{{ing['name']}}</h6></p>
-          <p class="card-text">
-            <h6 class="text-muted" style="font-size: 60%; font-weight:600;">{{ing['amount']}}</h6></p>
-        </div>
-      </div>
-      {% endfor %}
-
-</div>
-
-
-
-
-  <div class="row p-5 mx-auto " style="width:1000px">
-    <div class="col-md-6 cnter">
-      <table class="table table-sm">
-        <thead>
-          <span class="badge badge-default font-weight-bold text-danger">
-            <h2>Limit These </h2>
-          </span>
-        </thead>
-        <tbody>
-          {% for bad_nutri in recipe['bad_nutri'] %}
-          <tr>
-            {% if bad_nutri['indented'] %}
-            <td>&nbsp;&nbsp;{{bad_nutri['title']}}</td>
-            {% else %}
-            <td>{{bad_nutri['title']}}</td>
-            {% endif %}
-            <td>{{bad_nutri['amount']}}</td>
-            <td>
-              <div class= "p-3 mb-2 bg-danger text-white">{{bad_nutri['percentOfDailyNeeds']}} </div></td>
-
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-
-  <div class="row p-5 mx-auto " style="width:1000px">
-    <div class="col-md-6 cnter">
-      <table class="table table-sm">
-        <thead>
-          <span class="badge badge-default font-weight-bold text-success">
-            <h2>Get Enough Of These </h2>
-          </span>
-        </thead>
-        <tbody>
-          {% for good_nutri in recipe['good_nutri'] %}
-          <tr>
-            {% if good_nutri['indented'] %}
-            <td>&nbsp;&nbsp;{{good_nutri['title']}}</td>
-            {% else %}
-            <td>{{good_nutri['title']}}</td>
-            {% endif %}
-            <td>{{good_nutri['amount']}}</td>
-            <td>
-              <div class="p-3 mb-2 bg-success text-white">{{good_nutri['percentOfDailyNeeds']}}</div>
-            </td>
-
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-
-
-
 {% endblock %}
