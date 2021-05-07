@@ -40,7 +40,7 @@
                             <a class="nav-link" href="/my-fav">My Favorite</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/add-your-recipe">Add Your Recipe</a>
+                            <a class="nav-link" href="/add-your-recipe">Create Your Recipe</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -49,10 +49,10 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 {% if 'user_id' in session %}
-                                <a class="dropdown-item disabled" href="/login">Login</a>
+                                <a class="dropdown-item disabled" href="/signin">Login</a>
 
                                 {% else%}
-                                <a class="dropdown-item " href="/login">Login</a>
+                                <a class="dropdown-item " href="/signin">Login</a>
                                 {% endif %}
                                 <a class="dropdown-item" href="/logout">Logout</a>
 
@@ -61,7 +61,7 @@
                             </div>
                         </li>
                     </ul>
-                    <form class="form-inline my-2 my-lg-0" action="/search">
+                    <form class="form-inline my-2 my-lg-0" action="/search/results">
                         <input class="form-control my-sm-2" type="text" name="search"
                             placeholder="Search separated by comma" aria-label="Search" required>
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit"> Search</button>
