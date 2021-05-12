@@ -17,7 +17,7 @@
 }
 
  body {
-  background-image: url("/static/img/paper.gif");
+ /* background-image: url("/static/img/paper.gif");*/
   background-color: #cccccc;
 
   text-align: center;

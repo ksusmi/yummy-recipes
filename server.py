@@ -139,7 +139,7 @@ def sign_in():
             flash("Logged in as %s" % user.fname)
             if 'redirect_recipe_id' in session:
                 redirect_recipe_id = int(session['redirect_recipe_id'])
-                session['redirect_recipe_id'].clear()
+                #session['redirect_recipe_id'].clear()
                 if isinstance(redirect_recipe_id, int):
                     return redirect(f'/recipe/details?id={redirect_recipe_id}')
             else:
@@ -350,6 +350,23 @@ def add_to_your_favorite():
     else:
         flash("Please Login before you add to your favorite")
         return redirect("/signin")
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """ Handling page not found"""
+    return render_template('404.html')
+
+@app.errorhandler(500)
+def page_not_found(error):
+    """ handling internal server error"""
+    return render_template('500.html')
+
+@app.errorhandler(Exception)
+def page_not_found(error):
+    """ handling internal server error"""
+    app.logger.exception(error)
+    return render_template('500.html')
 
 
 if __name__ == '__main__':

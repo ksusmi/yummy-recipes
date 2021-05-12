@@ -15,19 +15,19 @@
         <form id="form-submityourrecipe" class="needs-validation" action="/submit-your-recipe" method="POST">
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="recipe-title">Recipe Name</label>
+                    <label for="recipe-title">Recipe Name *</label>
                     <input type="input" class="form-control" id="recipe-title" name="recipe-title"
                         placeholder="Recipe Title" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="description">Description</label>
+                    <label for="description">Description *</label>
                     <textarea class="form-control" id="description" placeholder="Short Desc For Recipe"
                         name="description" required rows="3"></textarea>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="instrictions">Instructions</label>
+                    <label for="instrictions">Instructions *</label>
                     <textarea class="form-control" id="instructions" placeholder="Instructions For Recipe"
                         name="instructions" required rows="3"></textarea>
                 </div>
@@ -78,7 +78,7 @@
 
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="ingredient">Ingredients</label>
+                    <label for="ingredient">Ingredients *</label>
                     <select class="form-control" name="ingredients" id="ingredientsId"
                         onchange="addingredient(this.value)" required>
                         <option value="">-- Select -- </option>
@@ -98,7 +98,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="quantity">Quantity</label>
+                    <label for="quantity">Quantity *</label>
                     <input type="number" step = "0.01" min=0 class="form-control" name="quantity" id="quantityId" required>
                 </div>
             </div>
@@ -132,6 +132,12 @@
 
 
             <button type="submit" class="add-your-recipe-Button btn-success">Create Recipe</button>
+            &nbsp;
+            <footer class="footer">
+                <div class="container">
+                  <span class="text">* required fields.</span>
+                </div>
+              </footer>
 
             <script>
                 function addingredient(val) {
@@ -157,5 +163,6 @@
     </div>
 
 </div>
+
 
 {% endblock %}
